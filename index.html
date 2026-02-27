@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Meal Plan</title>
+<style>
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface-2: #232734;
+    --border: #2e3345;
+    --text: #e4e6f0;
+    --text-muted: #8b8fa3;
+    --accent: #6c5ce7;
+    --accent-light: #a29bfe;
+    --green: #00b894;
+    --green-bg: rgba(0,184,148,0.12);
+    --orange: #fdcb6e;
+    --orange-bg: rgba(253,203,110,0.12);
+    --red: #e17055;
+    --red-bg: rgba(225,112,85,0.12);
+    --blue: #74b9ff;
+    --blue-bg: rgba(116,185,255,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* ========== HEADER / NAV ========== */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 16px;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 4px 12px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .stat strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  /* Anchor nav (replaces JS tabs) */
+  .nav-links {
+    display: flex;
+    gap: 0;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--accent-light);
+    border-bottom-color: var(--accent);
+  }
+
+  /* Section scroll offset anchors */
+  .section-anchor {
+    scroll-margin-top: 80px;
+  }
+
+  /* ========== MAIN CONTENT ========== */
+  .content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  /* ========== BATCH COOK BANNER ========== */
+  .batch-cook-banner {
+    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .batch-cook-banner .icon { font-size: 2rem; }
+
+  .batch-cook-banner h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .batch-cook-banner p {
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+
+  /* ========== DETAILS / SUMMARY (shared) ========== */
+  details > summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::marker { display: none; }
+
+  /* Chevron */
+  .chevron {
+    display: inline-block;
+    transition: transform 0.2s;
+    color: var(--text-muted);
+    font-style: normal;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  details[open] > summary .chevron { transform: rotate(180deg); }
+
+  /* ========== DAY CARDS ========== */
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .day-card > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    transition: background 0.15s;
+  }
+
+  .day-card > summary:hover { background: var(--surface-2); }
+
+  .day-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .day-macros {
+    display: flex;
+    gap: 12px;
+    font-size: 0.8rem;
+  }
+
+  .macro-pill {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .macro-cal  { background: var(--orange-bg); color: var(--orange); }
+  .macro-pro  { background: var(--green-bg);  color: var(--green);  }
+  .macro-carb { background: var(--blue-bg);   color: var(--blue);   }
+  .macro-fat  { background: var(--red-bg);    color: var(--red);    }
+
+  .day-summary-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .day-meals {
+    padding: 0 20px 16px;
+  }
+
+  .meal-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+
+  .meal-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-light);
+  }
+
+  .meal-name { font-size: 0.9rem; }
+
+  .meal-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .meal-link:hover {
+    color: var(--accent-light);
+    text-decoration: underline;
+  }
+
+  .meal-macros {
+    display: flex;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .meal-row-batch {
+    background: rgba(108,92,231,0.08);
+    border-left: 3px solid var(--accent);
+    padding-left: 9px;
+    margin: 4px 0;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  .meal-label-batch {
+    color: var(--accent-light);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .day-note {
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-left: 3px solid var(--accent);
+  }
+
+  /* ========== RECIPE CARDS ========== */
+  .recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .recipe-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .recipe-card:hover { border-color: var(--accent); }
+
+  .recipe-card > summary {
+    padding: 16px 20px;
+    display: block;
+  }
+
+  .recipe-summary-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .recipe-summary-main { flex: 1; }
+
+  .recipe-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .tag-batch     { background: var(--accent);      color: #fff;         }
+  .tag-breakfast { background: var(--orange-bg);   color: var(--orange);}
+  .tag-lunch     { background: var(--green-bg);    color: var(--green); }
+  .tag-dinner    { background: var(--red-bg);      color: var(--red);   }
+  .tag-snack     { background: var(--blue-bg);     color: var(--blue);  }
+
+  .recipe-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .recipe-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .recipe-body {
+    padding: 0 20px 20px;
+  }
+
+  .recipe-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-light);
+    margin: 16px 0 8px;
+  }
+
+  .recipe-body ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .recipe-body ul li {
+    padding: 4px 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .recipe-body ul li:last-child { border: none; }
+
+  .recipe-body ol {
+    padding-left: 20px;
+  }
+
+  .recipe-body ol li {
+    padding: 6px 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .recipe-macros-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  /* ========== SHOPPING LIST ========== */
+  .shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .shop-total {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .shop-total .amount { color: var(--green); }
+  .shop-total .of { color: var(--text-muted); font-weight: 400; font-size: 0.9rem; }
+
+  .shop-category {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .shop-category > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    transition: background 0.15s;
+  }
+
+  .shop-category > summary:hover { background: var(--surface-2); }
+
+  .shop-cat-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .shop-cat-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .shop-cat-chevron {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .shop-cat-items {
+    padding: 0 20px 8px;
+  }
+
+  /* Shopping items as labels for better iOS tap targets */
+  .shop-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .shop-item label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .shop-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--green);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .shop-item-name {
+    flex: 1;
+    font-size: 0.9rem;
+  }
+
+  .shop-item-qty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    min-width: 80px;
+  }
+
+  .shop-item-price {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--green);
+    min-width: 50px;
+    text-align: right;
+  }
+
+  /* ========== BUDGET TIPS ========== */
+  .tips-section {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .tips-section h3 {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+
+  .tip-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  .tip-row:last-child { border: none; }
+
+  .tip-save {
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 640px) {
+    .header-stats { display: none; }
+    .day-macros { gap: 6px; }
+    .macro-pill { font-size: 0.7rem; padding: 2px 6px; }
+    .meal-row { grid-template-columns: 80px 1fr; }
+    .meal-macros { grid-column: 1 / -1; }
+    .recipe-grid { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+    .shop-item { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>Weekly Meal Plan</h1>
+    <div class="header-stats">
+      <div class="stat"><strong>3,000</strong>cal target</div>
+      <div class="stat"><strong>180g</strong>protein</div>
+      <div class="stat"><strong>2</strong>people</div>
+      <div class="stat"><strong>~&pound;63</strong>/week</div>
+    </div>
+  </div>
+  <nav class="nav-links">
+    <a href="#week-plan">Week Plan</a>
+    <a href="#recipes">Recipes</a>
+    <a href="#shopping">Shopping</a>
+  </nav>
+</div>
+
+<div class="content">
+
+  <!-- ==================== WEEK PLAN ==================== -->
+  <div id="week-plan" class="section section-anchor">
+    <div class="batch-cook-banner">
+      <div class="icon">&#127859;</div>
+      <div>
+        <h3>Batch Cook Schedule</h3>
+        <p><strong>Monday evening</strong> (after delivery): 2kg boneless chicken thighs in Instant Pot (25 min) &mdash; covers Tue&ndash;Wed &nbsp;|&nbsp; <strong>Wednesday evening:</strong> 1.5kg beef mince + pork belly (20 min) &mdash; covers Thu&ndash;Sat</p>
+      </div>
+    </div>
+
+    <!-- Monday (open by default) -->
+    <details class="day-card" open>
+      <summary>
+        <span class="day-name">Monday</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">1460 cal</span>
+            <span class="macro-pill macro-pro">102g pro</span>
+            <span class="macro-pill macro-carb">147g carb</span>
+            <span class="macro-pill macro-fat">48g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#chicken-curry">Instant Pot chicken curry with rice &amp; spinach</a></span>
+          <div class="meal-macros"><span>820 cal</span><span>54g P</span><span>85g C</span><span>26g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake + peanut butter on toast</a></span>
+          <div class="meal-macros"><span>640 cal</span><span>48g P</span><span>62g C</span><span>22g F</span></div>
+        </div>
+        <div class="meal-row meal-row-batch">
+          <span class="meal-label meal-label-batch">Batch Cook</span>
+          <span class="meal-name"><a class="meal-link" href="#batch-chicken">Batch Cook &mdash; Monday Evening</a> &mdash; <span style="color:var(--text-muted);font-size:0.85em;">2kg boneless chicken thighs in Instant Pot (25 min HIGH PRESSURE + 10 min NR) &mdash; covers Tue&ndash;Wed</span></span>
+          <div class="meal-macros"></div>
+        </div>
+        <div class="day-note">Delivery day &mdash; morning meals use whatever is in the house. Freeze bone-in thighs immediately for Sunday.</div>
+      </div>
+    </details>
+
+    <!-- Tuesday -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Tuesday</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">2860 cal</span>
+            <span class="macro-pill macro-pro">220g pro</span>
+            <span class="macro-pill macro-carb">268g carb</span>
+            <span class="macro-pill macro-fat">80g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Wake-up</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name"><a class="meal-link" href="#scrambled-eggs">Scrambled eggs (4) on toast with cheese, tomato &amp; sausages (2&ndash;3)</a></span>
+          <div class="meal-macros"><span>720 cal</span><span>52g P</span><span>34g C</span><span>38g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#tuna-pasta">Tuna pasta with sweetcorn &amp; mixed salad</a></span>
+          <div class="meal-macros"><span>660 cal</span><span>54g P</span><span>82g C</span><span>6g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#chicken-lentil-stew">Instant Pot chicken &amp; lentil stew with bread</a></span>
+          <div class="meal-macros"><span>780 cal</span><span>58g P</span><span>78g C</span><span>20g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake + Greek yoghurt with honey</a></span>
+          <div class="meal-macros"><span>520 cal</span><span>50g P</span><span>42g C</span><span>14g F</span></div>
+        </div>
+        <div class="day-note">Top up: extra toast with peanut butter if short on calories (+250 cal)</div>
+      </div>
+    </details>
+
+    <!-- Wednesday -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Wednesday</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">2860 cal</span>
+            <span class="macro-pill macro-pro">184g pro</span>
+            <span class="macro-pill macro-carb">310g carb</span>
+            <span class="macro-pill macro-fat">88g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Wake-up</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name"><a class="meal-link" href="#overnight-oats">Overnight protein oats with banana &amp; peanut butter</a></span>
+          <div class="meal-macros"><span>620 cal</span><span>30g P</span><span>78g C</span><span>22g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#chicken-wrap">Chicken wrap with peppers &amp; yoghurt dressing</a></span>
+          <div class="meal-macros"><span>640 cal</span><span>48g P</span><span>56g C</span><span>22g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#pulled-chicken">Instant Pot pulled chicken with rice, black beans &amp; salad</a></span>
+          <div class="meal-macros"><span>780 cal</span><span>52g P</span><span>82g C</span><span>20g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake + peanut butter on toast</a></span>
+          <div class="meal-macros"><span>640 cal</span><span>48g P</span><span>62g C</span><span>22g F</span></div>
+        </div>
+        <div class="meal-row meal-row-batch">
+          <span class="meal-label meal-label-batch">Batch Cook</span>
+          <span class="meal-name"><a class="meal-link" href="#batch-mince">Batch Cook &mdash; Wednesday Evening</a> &mdash; <span style="color:var(--text-muted);font-size:0.85em;">1.5kg beef mince base in Instant Pot (20 min HIGH PRESSURE + 10 min NR) &mdash; covers Thu&ndash;Sat</span></span>
+          <div class="meal-macros"></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Thursday -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Thursday</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">3060 cal</span>
+            <span class="macro-pill macro-pro">212g pro</span>
+            <span class="macro-pill macro-carb">274g carb</span>
+            <span class="macro-pill macro-fat">108g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Wake-up</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name"><a class="meal-link" href="#scrambled-eggs">Scrambled eggs (4) on toast with cheese, spinach &amp; sausages (2&ndash;3)</a></span>
+          <div class="meal-macros"><span>740 cal</span><span>54g P</span><span>34g C</span><span>40g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#mince-rice-bowl">Beef mince rice bowl with frozen veg</a></span>
+          <div class="meal-macros"><span>740 cal</span><span>48g P</span><span>76g C</span><span>24g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#beef-chilli">Instant Pot beef chilli with rice &amp; sour cream</a></span>
+          <div class="meal-macros"><span>860 cal</span><span>52g P</span><span>88g C</span><span>28g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake + cottage cheese on toast</a></span>
+          <div class="meal-macros"><span>540 cal</span><span>52g P</span><span>44g C</span><span>14g F</span></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Friday -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Friday</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">3020 cal</span>
+            <span class="macro-pill macro-pro">182g pro</span>
+            <span class="macro-pill macro-carb">344g carb</span>
+            <span class="macro-pill macro-fat">94g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Wake-up</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name"><a class="meal-link" href="#overnight-oats">Overnight protein oats with banana &amp; peanut butter</a></span>
+          <div class="meal-macros"><span>620 cal</span><span>30g P</span><span>78g C</span><span>22g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#tuna-jacket">Tuna jacket potato with cheese &amp; baked beans</a></span>
+          <div class="meal-macros"><span>760 cal</span><span>50g P</span><span>82g C</span><span>22g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#bolognese">Instant Pot bolognese with pasta &amp; side salad</a></span>
+          <div class="meal-macros"><span>820 cal</span><span>48g P</span><span>90g C</span><span>26g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake + peanut butter on toast</a></span>
+          <div class="meal-macros"><span>640 cal</span><span>48g P</span><span>62g C</span><span>22g F</span></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Saturday -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Saturday</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">3080 cal</span>
+            <span class="macro-pill macro-pro">204g pro</span>
+            <span class="macro-pill macro-carb">296g carb</span>
+            <span class="macro-pill macro-fat">104g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Wake-up</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name"><a class="meal-link" href="#scrambled-eggs">Scrambled eggs (4) on toast with baked beans &amp; sausages (2&ndash;3)</a></span>
+          <div class="meal-macros"><span>760 cal</span><span>50g P</span><span>52g C</span><span>34g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#bolognese">Leftover bolognese reheated with extra cheese</a></span>
+          <div class="meal-macros"><span>780 cal</span><span>50g P</span><span>78g C</span><span>28g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#beef-stew">Instant Pot beef &amp; vegetable stew with mash</a></span>
+          <div class="meal-macros"><span>800 cal</span><span>48g P</span><span>82g C</span><span>24g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake + Greek yoghurt with oats &amp; honey</a></span>
+          <div class="meal-macros"><span>560 cal</span><span>50g P</span><span>52g C</span><span>16g F</span></div>
+        </div>
+        <div class="day-note">Defrost: move bone-in chicken thighs from freezer to fridge this morning for Sunday roast.</div>
+      </div>
+    </details>
+
+    <!-- Sunday -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Sunday</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">2980 cal</span>
+            <span class="macro-pill macro-pro">198g pro</span>
+            <span class="macro-pill macro-carb">300g carb</span>
+            <span class="macro-pill macro-fat">92g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Wake-up</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-pancakes">Protein pancakes with honey</a></span>
+          <div class="meal-macros"><span>640 cal</span><span>42g P</span><span>72g C</span><span>18g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#chicken-lentil-stew">Chicken &amp; lentil soup (use up leftovers)</a></span>
+          <div class="meal-macros"><span>680 cal</span><span>50g P</span><span>62g C</span><span>20g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#sunday-roast">IP roast chicken thighs with roast potatoes &amp; veg</a></span>
+          <div class="meal-macros"><span>840 cal</span><span>52g P</span><span>72g C</span><span>30g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake + peanut butter on toast</a></span>
+          <div class="meal-macros"><span>640 cal</span><span>48g P</span><span>62g C</span><span>22g F</span></div>
+        </div>
+        <div class="day-note">Order groceries tonight on Tesco for Monday delivery</div>
+      </div>
+    </details>
+
+  </div><!-- /week-plan -->
+
+
+  <!-- ==================== RECIPES ==================== -->
+  <div id="recipes" class="section section-anchor">
+    <h2 class="section-heading">Recipes</h2>
+    <div class="recipe-grid">
+
+      <!-- batch-chicken -->
+      <details class="recipe-card" id="batch-chicken">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-batch">batch</span>
+              <h3>Batch Chicken Thighs</h3>
+              <div class="recipe-meta">
+                <span>Instant Pot</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: 25 min HP + 10 NR</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">330 cal</span>
+            <span class="macro-pill macro-pro">52g pro</span>
+            <span class="macro-pill macro-carb">0g carb</span>
+            <span class="macro-pill macro-fat">12g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per 250g) &mdash; Makes ~1.6kg cooked</div>
+          <ul>
+            <li>2kg boneless, skinless chicken thighs</li>
+            <li>500ml chicken stock (1 cube + water)</li>
+            <li>1 tsp garlic powder</li>
+            <li>1 tsp paprika</li>
+            <li>Salt and pepper</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Add stock to Instant Pot</li>
+            <li>Season chicken with garlic powder, paprika, salt, pepper</li>
+            <li>Place in stock (can stack)</li>
+            <li>Seal lid &rarr; HIGH PRESSURE 25 min</li>
+            <li>Natural release 10 min, then quick release</li>
+            <li>Shred with two forks in the pot</li>
+            <li>Store in containers &mdash; use within 4 days</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- batch-mince -->
+      <details class="recipe-card" id="batch-mince">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-batch">batch</span>
+              <h3>Batch Beef Mince Base</h3>
+              <div class="recipe-meta">
+                <span>Instant Pot</span>
+                <span>Prep: 10 min</span>
+                <span>Cook: 20 min HP + 10 NR</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">380 cal</span>
+            <span class="macro-pill macro-pro">42g pro</span>
+            <span class="macro-pill macro-carb">8g carb</span>
+            <span class="macro-pill macro-fat">20g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per 250g) &mdash; Makes ~1.2kg cooked</div>
+          <ul>
+            <li>1.5kg beef mince (20% fat &mdash; drain after browning)</li>
+            <li>2 tins chopped tomatoes</li>
+            <li>2 onions, diced</li>
+            <li>3 cloves garlic, minced</li>
+            <li>1 tbsp olive oil</li>
+            <li>1 tsp cumin, 1 tsp paprika</li>
+            <li>Salt and pepper</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>IP on SAUTE &rarr; add oil</li>
+            <li>Brown mince in batches, break it up, set aside</li>
+            <li>Saute onions 3 min, garlic 1 min</li>
+            <li>Return mince, add tomatoes + spices</li>
+            <li>Seal &rarr; HIGH PRESSURE 20 min</li>
+            <li>Natural release 10 min</li>
+            <li>Split into portions for chilli/bolognese/bowls</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- overnight-oats -->
+      <details class="recipe-card" id="overnight-oats">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-breakfast">breakfast</span>
+              <h3>Overnight Protein Oats</h3>
+              <div class="recipe-meta">
+                <span>No Cook</span>
+                <span>Prep: 5 min (night before)</span>
+                <span>Cook: None</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">620 cal</span>
+            <span class="macro-pill macro-pro">30g pro</span>
+            <span class="macro-pill macro-carb">78g carb</span>
+            <span class="macro-pill macro-fat">22g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>80g porridge oats</li>
+            <li>200ml semi-skimmed milk</li>
+            <li>100g Greek yoghurt (0% fat)</li>
+            <li>1 banana, sliced</li>
+            <li>1 tbsp peanut butter</li>
+            <li>Pinch of cinnamon (optional)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Mix oats, milk, and yoghurt in a jar</li>
+            <li>Stir in cinnamon if using</li>
+            <li>Seal and refrigerate overnight</li>
+            <li>Morning: top with banana and peanut butter</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- scrambled-eggs -->
+      <details class="recipe-card" id="scrambled-eggs">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-breakfast">breakfast</span>
+              <h3>Scrambled Eggs on Toast</h3>
+              <div class="recipe-meta">
+                <span>5 min</span>
+                <span>Prep: 2 min</span>
+                <span>Cook: 5 min</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">580 cal</span>
+            <span class="macro-pill macro-pro">40g pro</span>
+            <span class="macro-pill macro-carb">34g carb</span>
+            <span class="macro-pill macro-fat">30g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>4 large eggs</li>
+            <li>2 slices wholemeal toast</li>
+            <li>30g cheddar, grated</li>
+            <li>Splash of milk</li>
+            <li>Knob of butter</li>
+            <li>Salt and pepper</li>
+            <li>Optional: spinach, tomato</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Whisk eggs with milk, salt, pepper</li>
+            <li>Melt butter in pan over medium-low</li>
+            <li>Pour eggs, stir gently with spatula</li>
+            <li>When nearly set, fold in cheese (and spinach)</li>
+            <li>Serve on toast</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- protein-pancakes -->
+      <details class="recipe-card" id="protein-pancakes">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-breakfast">breakfast</span>
+              <h3>Protein Pancakes</h3>
+              <div class="recipe-meta">
+                <span>10 min</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: 10 min</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">640 cal</span>
+            <span class="macro-pill macro-pro">42g pro</span>
+            <span class="macro-pill macro-carb">72g carb</span>
+            <span class="macro-pill macro-fat">18g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>80g oats (blitzed to flour)</li>
+            <li>2 eggs</li>
+            <li>1 banana</li>
+            <li>1 scoop protein powder</li>
+            <li>50ml milk</li>
+            <li>1 tsp baking powder</li>
+            <li>Honey to serve</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Blend all ingredients except honey until smooth</li>
+            <li>Heat non-stick pan, spray with oil</li>
+            <li>Pour small circles (~10cm), cook 2 min per side</li>
+            <li>Stack and drizzle with honey</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- chicken-rice-bowl -->
+      <details class="recipe-card" id="chicken-rice-bowl">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-lunch">lunch</span>
+              <h3>Chicken &amp; Rice Bowl</h3>
+              <div class="recipe-meta">
+                <span>5 min reheat</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: Reheat only</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">680 cal</span>
+            <span class="macro-pill macro-pro">52g pro</span>
+            <span class="macro-pill macro-carb">72g carb</span>
+            <span class="macro-pill macro-fat">18g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>250g batch-cooked shredded chicken</li>
+            <li>150g cooked rice (75g dry)</li>
+            <li>100g steamed broccoli</li>
+            <li>1 tbsp soy sauce</li>
+            <li>1 tsp sesame oil (optional)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Microwave chicken and rice 2 min</li>
+            <li>Steam or microwave broccoli</li>
+            <li>Combine, drizzle with soy sauce</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- tuna-pasta -->
+      <details class="recipe-card" id="tuna-pasta">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-lunch">lunch</span>
+              <h3>Tuna Pasta</h3>
+              <div class="recipe-meta">
+                <span>15 min</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: 12 min</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">660 cal</span>
+            <span class="macro-pill macro-pro">54g pro</span>
+            <span class="macro-pill macro-carb">82g carb</span>
+            <span class="macro-pill macro-fat">6g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>100g pasta (dry)</li>
+            <li>2 tins tuna (spring water), drained</li>
+            <li>80g sweetcorn (tinned)</li>
+            <li>2 tbsp Greek yoghurt</li>
+            <li>Squeeze of lemon</li>
+            <li>Salt, pepper, paprika</li>
+            <li>Side salad</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Cook pasta per packet, drain</li>
+            <li>Mix tuna, sweetcorn, yoghurt, lemon, seasoning</li>
+            <li>Toss through warm pasta</li>
+            <li>Serve with side salad</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- chicken-wrap -->
+      <details class="recipe-card" id="chicken-wrap">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-lunch">lunch</span>
+              <h3>Chicken Wrap</h3>
+              <div class="recipe-meta">
+                <span>5 min</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: None</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">640 cal</span>
+            <span class="macro-pill macro-pro">48g pro</span>
+            <span class="macro-pill macro-carb">56g carb</span>
+            <span class="macro-pill macro-fat">22g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>200g batch-cooked shredded chicken</li>
+            <li>2 large tortilla wraps</li>
+            <li>&frac12; pepper, sliced</li>
+            <li>&frac14; onion, sliced</li>
+            <li>2 tbsp Greek yoghurt</li>
+            <li>Lemon squeeze, paprika</li>
+            <li>Lettuce or spinach</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Mix yoghurt with paprika and lemon</li>
+            <li>Warm wraps 15 sec in microwave</li>
+            <li>Spread dressing, layer chicken, veg, leaves</li>
+            <li>Roll tightly</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- tuna-jacket -->
+      <details class="recipe-card" id="tuna-jacket">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-lunch">lunch</span>
+              <h3>Tuna Jacket Potato</h3>
+              <div class="recipe-meta">
+                <span>10 min</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: 8 min microwave</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">760 cal</span>
+            <span class="macro-pill macro-pro">50g pro</span>
+            <span class="macro-pill macro-carb">82g carb</span>
+            <span class="macro-pill macro-fat">22g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>1 large baking potato (~300g)</li>
+            <li>2 tins tuna, drained</li>
+            <li>30g cheddar, grated</li>
+            <li>&frac12; tin baked beans</li>
+            <li>Knob of butter</li>
+            <li>Salt and pepper</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Prick potato, microwave 4 min, flip, 4 min more</li>
+            <li>Mix tuna with butter, salt, pepper</li>
+            <li>Split potato, fill with tuna and cheese</li>
+            <li>Heat beans, serve alongside</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- mince-rice-bowl -->
+      <details class="recipe-card" id="mince-rice-bowl">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-lunch">lunch</span>
+              <h3>Beef Mince Rice Bowl</h3>
+              <div class="recipe-meta">
+                <span>5 min reheat</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: Reheat only</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">740 cal</span>
+            <span class="macro-pill macro-pro">48g pro</span>
+            <span class="macro-pill macro-carb">76g carb</span>
+            <span class="macro-pill macro-fat">24g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>250g batch-cooked mince base</li>
+            <li>150g cooked rice</li>
+            <li>100g frozen mixed veg</li>
+            <li>1 tbsp soy sauce</li>
+            <li>Sriracha (optional)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Microwave mince and rice 2 min</li>
+            <li>Microwave veg 2 min</li>
+            <li>Combine, add soy sauce and hot sauce</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- chicken-curry -->
+      <details class="recipe-card" id="chicken-curry">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-dinner">dinner</span>
+              <h3>Instant Pot Chicken Curry</h3>
+              <div class="recipe-meta">
+                <span>Instant Pot</span>
+                <span>Prep: 10 min</span>
+                <span>Cook: 15 min HP + 5 NR</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">820 cal</span>
+            <span class="macro-pill macro-pro">54g pro</span>
+            <span class="macro-pill macro-carb">85g carb</span>
+            <span class="macro-pill macro-fat">26g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>500g shredded chicken (for 2)</li>
+            <li>1 tin chopped tomatoes</li>
+            <li>1 onion, diced</li>
+            <li>2 cloves garlic</li>
+            <li>2 tbsp curry paste</li>
+            <li>100ml coconut milk</li>
+            <li>1 tbsp olive oil</li>
+            <li>Handful of spinach</li>
+            <li>150g rice (dry, for 2)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>IP SAUTE: oil, onion 3 min, garlic 1 min</li>
+            <li>Add curry paste, stir 1 min</li>
+            <li>Add tomatoes and coconut milk</li>
+            <li>Add shredded chicken</li>
+            <li>Seal &rarr; HIGH PRESSURE 5 min</li>
+            <li>Quick release, stir in spinach</li>
+            <li>Serve over rice</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- chicken-lentil-stew -->
+      <details class="recipe-card" id="chicken-lentil-stew">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-dinner">dinner</span>
+              <h3>Chicken &amp; Lentil Stew</h3>
+              <div class="recipe-meta">
+                <span>Instant Pot</span>
+                <span>Prep: 10 min</span>
+                <span>Cook: 15 min HP + 10 NR</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">780 cal</span>
+            <span class="macro-pill macro-pro">58g pro</span>
+            <span class="macro-pill macro-carb">78g carb</span>
+            <span class="macro-pill macro-fat">20g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>400g shredded chicken (for 2)</li>
+            <li>100g red lentils (dry)</li>
+            <li>1 tin chopped tomatoes</li>
+            <li>1 onion, diced</li>
+            <li>2 carrots, diced</li>
+            <li>2 cloves garlic</li>
+            <li>500ml chicken stock</li>
+            <li>1 tsp cumin, 1 tsp paprika</li>
+            <li>Crusty bread</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Add lentils, tomatoes, stock, veg, spices to IP</li>
+            <li>Seal &rarr; HIGH PRESSURE 15 min</li>
+            <li>Natural release 10 min</li>
+            <li>Stir in chicken, heat 2 min on SAUTE</li>
+            <li>Serve with bread</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- pulled-chicken -->
+      <details class="recipe-card" id="pulled-chicken">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-dinner">dinner</span>
+              <h3>Pulled Chicken, Rice &amp; Beans</h3>
+              <div class="recipe-meta">
+                <span>10 min</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: 10 min</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">780 cal</span>
+            <span class="macro-pill macro-pro">52g pro</span>
+            <span class="macro-pill macro-carb">82g carb</span>
+            <span class="macro-pill macro-fat">20g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>500g shredded chicken (for 2)</li>
+            <li>1 tin black beans, drained</li>
+            <li>150g rice (dry, for 2)</li>
+            <li>1 tbsp BBQ sauce or smoked paprika + honey</li>
+            <li>Side salad</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Mix chicken with BBQ sauce</li>
+            <li>Heat chicken and beans on SAUTE or microwave</li>
+            <li>Serve over rice with side salad</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- beef-chilli -->
+      <details class="recipe-card" id="beef-chilli">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-dinner">dinner</span>
+              <h3>Instant Pot Beef Chilli</h3>
+              <div class="recipe-meta">
+                <span>Instant Pot</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: 10 min SAUTE</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">860 cal</span>
+            <span class="macro-pill macro-pro">52g pro</span>
+            <span class="macro-pill macro-carb">88g carb</span>
+            <span class="macro-pill macro-fat">28g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>500g batch mince base (for 2)</li>
+            <li>1 tin kidney beans, drained</li>
+            <li>1 tsp chilli powder</li>
+            <li>1 tsp cumin</li>
+            <li>1 tbsp tomato puree</li>
+            <li>150g rice (dry, for 2)</li>
+            <li>Sour cream</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>IP SAUTE: mince base + beans + spices + puree</li>
+            <li>Simmer 10 min, stir occasionally</li>
+            <li>Serve over rice with sour cream</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- bolognese -->
+      <details class="recipe-card" id="bolognese">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-dinner">dinner</span>
+              <h3>Instant Pot Bolognese</h3>
+              <div class="recipe-meta">
+                <span>Instant Pot</span>
+                <span>Prep: 5 min</span>
+                <span>Cook: 15 min simmer</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">820 cal</span>
+            <span class="macro-pill macro-pro">48g pro</span>
+            <span class="macro-pill macro-carb">90g carb</span>
+            <span class="macro-pill macro-fat">26g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>500g batch mince base (for 2)</li>
+            <li>1 tbsp tomato puree</li>
+            <li>1 tsp oregano, 1 tsp basil</li>
+            <li>200g pasta (dry, for 2)</li>
+            <li>30g cheese, grated</li>
+            <li>Side salad</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Cook pasta per packet</li>
+            <li>IP SAUTE: mince base + puree + herbs, simmer 10&ndash;15 min</li>
+            <li>Toss through drained pasta</li>
+            <li>Top with cheese, serve with salad</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- beef-stew -->
+      <details class="recipe-card" id="beef-stew">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-dinner">dinner</span>
+              <h3>Beef &amp; Vegetable Stew</h3>
+              <div class="recipe-meta">
+                <span>Instant Pot</span>
+                <span>Prep: 10 min</span>
+                <span>Cook: 15 min HP + 10 NR</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">800 cal</span>
+            <span class="macro-pill macro-pro">48g pro</span>
+            <span class="macro-pill macro-carb">82g carb</span>
+            <span class="macro-pill macro-fat">24g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>500g batch mince base (for 2)</li>
+            <li>2 large potatoes, cubed</li>
+            <li>2 carrots, chunked</li>
+            <li>1 onion, quartered</li>
+            <li>300ml beef stock</li>
+            <li>1 tbsp Worcestershire sauce</li>
+            <li>1 tsp thyme</li>
+            <li>Mash: 2 potatoes, butter, milk</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Add mince, potatoes, carrots, onion, stock, sauce, thyme to IP</li>
+            <li>Seal &rarr; HIGH PRESSURE 15 min</li>
+            <li>Natural release 10 min</li>
+            <li>Boil and mash potatoes separately</li>
+            <li>Serve stew over mash</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- sunday-roast -->
+      <details class="recipe-card" id="sunday-roast">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-dinner">dinner</span>
+              <h3>Sunday Roast Chicken Thighs</h3>
+              <div class="recipe-meta">
+                <span>IP + Oven</span>
+                <span>Prep: 10 min</span>
+                <span>Cook: 15 min HP + 10 min oven</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">840 cal</span>
+            <span class="macro-pill macro-pro">52g pro</span>
+            <span class="macro-pill macro-carb">72g carb</span>
+            <span class="macro-pill macro-fat">30g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>6 bone-in chicken thighs (skin on)</li>
+            <li>4 medium potatoes, quartered</li>
+            <li>200g frozen veg or carrots/peas</li>
+            <li>1 tbsp olive oil</li>
+            <li>Garlic powder, paprika, salt, pepper</li>
+            <li>200ml chicken stock</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Season thighs with spices</li>
+            <li>IP SAUTE: sear skin-down 3 min</li>
+            <li>Add stock and potatoes</li>
+            <li>Seal &rarr; HIGH PRESSURE 15 min, quick release</li>
+            <li>Optional: grill thighs 5&ndash;10 min to crisp skin</li>
+            <li>Steam veg, serve with cooking liquid as gravy</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- protein-shake -->
+      <details class="recipe-card" id="protein-shake">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-snack">snack</span>
+              <h3>Protein Shake (Base)</h3>
+              <div class="recipe-meta">
+                <span>2 min</span>
+                <span>Prep: 2 min</span>
+                <span>Cook: None</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">370 cal</span>
+            <span class="macro-pill macro-pro">37g pro</span>
+            <span class="macro-pill macro-carb">35g carb</span>
+            <span class="macro-pill macro-fat">8g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>1 scoop protein powder</li>
+            <li>300ml semi-skimmed milk</li>
+            <li>1 banana (add 3&ndash;4 days/week)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Blend or shake all ingredients</li>
+            <li>Pair with one of the snack options below</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- pb-toast -->
+      <details class="recipe-card" id="pb-toast">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-snack">snack</span>
+              <h3>Peanut Butter Toast (Shake Pairing)</h3>
+              <div class="recipe-meta">
+                <span>3 min</span>
+                <span>Prep: 3 min</span>
+                <span>Cook: Toast</span>
+              </div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">300 cal</span>
+            <span class="macro-pill macro-pro">12g pro</span>
+            <span class="macro-pill macro-carb">30g carb</span>
+            <span class="macro-pill macro-fat">16g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (per serving)</div>
+          <ul>
+            <li>2 slices wholemeal bread</li>
+            <li>1 tbsp peanut butter</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Toast bread</li>
+            <li>Spread peanut butter</li>
+            <li>Eat alongside your shake</li>
+          </ol>
+        </div>
+      </details>
+
+    </div><!-- /recipe-grid -->
+  </div><!-- /recipes -->
+
+
+  <!-- ==================== SHOPPING LIST ==================== -->
+  <div id="shopping" class="section section-anchor">
+    <h2 class="section-heading">Shopping List</h2>
+
+    <div class="shop-header">
+      <div class="shop-total">
+        Estimated: <span class="amount">&pound;63.29</span>
+        <span class="of"> / ~&pound;63.29 order total</span>
+      </div>
+    </div>
+
+    <!-- Meat & Protein (open by default) -->
+    <details class="shop-category" open>
+      <summary>
+        <span class="shop-cat-name">Meat &amp; Protein</span>
+        <div class="shop-cat-chevron">
+          <span class="shop-cat-info">
+            <span>5 items</span>
+            <span>&pound;25.40</span>
+          </span>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="shop-cat-items">
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Frozen boneless chicken thighs (batch cook)</span>
+          </label>
+          <span class="shop-item-qty">4&times; 500g</span>
+          <span class="shop-item-price">&pound;4.00</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Chicken thighs, bone-in skin-on (Sunday roast &mdash; freeze on delivery, defrost Saturday)</span>
+          </label>
+          <span class="shop-item-qty">1.5kg</span>
+          <span class="shop-item-price">&pound;4.50</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Beef mince 20% fat (drain fat)</span>
+          </label>
+          <span class="shop-item-qty">1.5kg (3&times; 500g)</span>
+          <span class="shop-item-price">&pound;7.00</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Pork belly, sliced</span>
+          </label>
+          <span class="shop-item-qty">600g</span>
+          <span class="shop-item-price">&pound;3.50</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Tinned tuna in spring water</span>
+          </label>
+          <span class="shop-item-qty">8 tins</span>
+          <span class="shop-item-price">&pound;6.40</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Dairy & Eggs (closed) -->
+    <details class="shop-category">
+      <summary>
+        <span class="shop-cat-name">Dairy &amp; Eggs</span>
+        <div class="shop-cat-chevron">
+          <span class="shop-cat-info">
+            <span>6 items</span>
+            <span>&pound;12.70</span>
+          </span>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="shop-cat-items">
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Large free-range eggs</span>
+          </label>
+          <span class="shop-item-qty">30 (2&times; 15 box)</span>
+          <span class="shop-item-price">&pound;4.70</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Semi-skimmed milk</span>
+          </label>
+          <span class="shop-item-qty">2 pints</span>
+          <span class="shop-item-price">&pound;1.15</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Greek yoghurt 0% fat</span>
+          </label>
+          <span class="shop-item-qty">1kg</span>
+          <span class="shop-item-price">&pound;2.50</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Cheddar cheese block</span>
+          </label>
+          <span class="shop-item-qty">400g</span>
+          <span class="shop-item-price">&pound;2.50</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Cottage cheese</span>
+          </label>
+          <span class="shop-item-qty">300g tub</span>
+          <span class="shop-item-price">&pound;1.20</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Sour cream</span>
+          </label>
+          <span class="shop-item-qty">150ml</span>
+          <span class="shop-item-price">&pound;0.65</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Carbs & Grains (closed) -->
+    <details class="shop-category">
+      <summary>
+        <span class="shop-cat-name">Carbs &amp; Grains</span>
+        <div class="shop-cat-chevron">
+          <span class="shop-cat-info">
+            <span>3 items</span>
+            <span>&pound;4.80</span>
+          </span>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="shop-cat-items">
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Wholemeal bread</span>
+          </label>
+          <span class="shop-item-qty">2 loaves</span>
+          <span class="shop-item-price">&pound;2.20</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Tortilla wraps (large)</span>
+          </label>
+          <span class="shop-item-qty">Pack of 8</span>
+          <span class="shop-item-price">&pound;1.10</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Baking potatoes</span>
+          </label>
+          <span class="shop-item-qty">4 large</span>
+          <span class="shop-item-price">&pound;1.50</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Tinned & Dried (closed) -->
+    <details class="shop-category">
+      <summary>
+        <span class="shop-cat-name">Tinned &amp; Dried</span>
+        <div class="shop-cat-chevron">
+          <span class="shop-cat-info">
+            <span>4 items</span>
+            <span>&pound;4.50</span>
+          </span>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="shop-cat-items">
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Chopped tomatoes</span>
+          </label>
+          <span class="shop-item-qty">4 tins</span>
+          <span class="shop-item-price">&pound;2.20</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Kidney beans</span>
+          </label>
+          <span class="shop-item-qty">2 tins</span>
+          <span class="shop-item-price">&pound;1.20</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Sweetcorn</span>
+          </label>
+          <span class="shop-item-qty">1 tin</span>
+          <span class="shop-item-price">&pound;0.55</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Tomato puree</span>
+          </label>
+          <span class="shop-item-qty">1 tube</span>
+          <span class="shop-item-price">&pound;0.55</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Fruit & Veg (closed) -->
+    <details class="shop-category">
+      <summary>
+        <span class="shop-cat-name">Fruit &amp; Veg</span>
+        <div class="shop-cat-chevron">
+          <span class="shop-cat-info">
+            <span>14 items</span>
+            <span>&pound;11.49</span>
+          </span>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="shop-cat-items">
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Bananas</span>
+          </label>
+          <span class="shop-item-qty">1 bunch (~5)</span>
+          <span class="shop-item-price">&pound;0.75</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Onions</span>
+          </label>
+          <span class="shop-item-qty">1kg net</span>
+          <span class="shop-item-price">&pound;0.95</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Garlic bulb</span>
+          </label>
+          <span class="shop-item-qty">1</span>
+          <span class="shop-item-price">&pound;0.40</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Carrots</span>
+          </label>
+          <span class="shop-item-qty">1kg</span>
+          <span class="shop-item-price">&pound;0.55</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Peppers (mixed)</span>
+          </label>
+          <span class="shop-item-qty">3 pack</span>
+          <span class="shop-item-price">&pound;1.50</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Broccoli</span>
+          </label>
+          <span class="shop-item-qty">1 head</span>
+          <span class="shop-item-price">&pound;0.69</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Pak choi</span>
+          </label>
+          <span class="shop-item-qty">2 heads</span>
+          <span class="shop-item-price">&pound;1.40</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Fresh ginger root</span>
+          </label>
+          <span class="shop-item-qty">1 thumb</span>
+          <span class="shop-item-price">&pound;0.40</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Spring onions</span>
+          </label>
+          <span class="shop-item-qty">1 bunch</span>
+          <span class="shop-item-price">&pound;0.60</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Baby spinach</span>
+          </label>
+          <span class="shop-item-qty">200g bag</span>
+          <span class="shop-item-price">&pound;1.00</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Salad bag (mixed leaves)</span>
+          </label>
+          <span class="shop-item-qty">1 bag</span>
+          <span class="shop-item-price">&pound;0.85</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Cucumber</span>
+          </label>
+          <span class="shop-item-qty">1</span>
+          <span class="shop-item-price">&pound;0.45</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Tomatoes</span>
+          </label>
+          <span class="shop-item-qty">6 pack</span>
+          <span class="shop-item-price">&pound;0.95</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Frozen mixed veg</span>
+          </label>
+          <span class="shop-item-qty">1kg bag</span>
+          <span class="shop-item-price">&pound;1.00</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Sauces & Seasonings (closed) -->
+    <details class="shop-category">
+      <summary>
+        <span class="shop-cat-name">Sauces &amp; Seasonings</span>
+        <div class="shop-cat-chevron">
+          <span class="shop-cat-info">
+            <span>4 items</span>
+            <span>&pound;4.60</span>
+          </span>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="shop-cat-items">
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Peanut butter</span>
+          </label>
+          <span class="shop-item-qty">340g jar</span>
+          <span class="shop-item-price">&pound;1.80</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Curry paste (tikka/korma)</span>
+          </label>
+          <span class="shop-item-qty">1 jar</span>
+          <span class="shop-item-price">&pound;1.00</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">Five spice powder</span>
+          </label>
+          <span class="shop-item-qty">1 jar</span>
+          <span class="shop-item-price">&pound;0.90</span>
+        </div>
+        <div class="shop-item">
+          <label>
+            <input type="checkbox">
+            <span class="shop-item-name">BBQ sauce</span>
+          </label>
+          <span class="shop-item-qty">1 bottle</span>
+          <span class="shop-item-price">&pound;0.90</span>
+        </div>
+      </div>
+    </details>
+
+    <div class="tips-section">
+      <h3>Budget Tips &mdash; Bringing It Under &pound;55</h3>
+      <div class="tip-row"><span>Frozen chicken thighs used &mdash; vs fresh</span><span class="tip-save">Saving ~&pound;2</span></div>
+      <div class="tip-row"><span>20% fat mince used &mdash; drain fat after browning</span><span class="tip-save">Saving ~&pound;2</span></div>
+      <div class="tip-row"><span>Sauces/spices already in stock skipped from order</span><span class="tip-save">Saving ~&pound;9</span></div>
+      <div class="tip-row"><span>Buy Tesco own-brand across the board</span><span class="tip-save">Could save ~&pound;5&ndash;8 more</span></div>
+      <div class="tip-row"><span>Replace 1 mince dinner with lentil/chickpea dish</span><span class="tip-save">Could save ~&pound;3 more</span></div>
+      <div class="tip-row"><strong>Week 2+ (sauces restocked), recurring cost</strong><strong class="tip-save">~&pound;55&ndash;58</strong></div>
+    </div>
+
+  </div><!-- /shopping -->
+
+</div><!-- /content -->
+
+</body>
+</html>
