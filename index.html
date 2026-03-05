@@ -152,6 +152,32 @@
     opacity: 0.9;
   }
 
+  .batch-cook-card {
+    background: var(--green-bg);
+    border: 1px solid var(--green);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .batch-cook-card .batch-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+  .batch-cook-card .batch-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--green);
+    margin-bottom: 2px;
+  }
+
+  .batch-cook-card .batch-detail {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
   /* ========== DETAILS / SUMMARY (shared) ========== */
   details > summary {
     list-style: none;
@@ -596,6 +622,14 @@
       </div>
     </div>
 
+    <div class="batch-cook-card">
+      <div class="batch-icon">&#127859;</div>
+      <div>
+        <span class="batch-label">Batch Cook &mdash; Session 1</span>
+        <span class="batch-detail">Beef Mince Base &mdash; 1.2 kg in IP &mdash; covers Day 1 bolognese + Day 2 beef stew</span>
+      </div>
+    </div>
+
     <!-- Day 1 (open by default) -->
     <details class="day-card" open>
       <summary>
@@ -729,6 +763,14 @@
       </div>
     </details>
 
+
+    <div class="batch-cook-card">
+      <div class="batch-icon">&#127859;</div>
+      <div>
+        <span class="batch-label">Batch Cook &mdash; Session 2</span>
+        <span class="batch-detail">Chicken Thighs &mdash; 1.5 kg in IP &mdash; covers Day 4 curry + Day 5 lentil stew</span>
+      </div>
+    </div>
 
     <!-- Day 4 -->
     <details class="day-card">
