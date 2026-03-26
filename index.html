@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weekly Meal Plan</title>
+<title>Weekly Meal Plan &mdash; Week 4</title>
 <style>
   html { scroll-behavior: smooth; }
 
@@ -204,6 +204,22 @@
     border-left: 3px solid var(--accent);
   }
 
+  /* batch cook day indicator */
+  .batch-day-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--green-bg);
+    color: var(--green);
+    border: 1px solid var(--green);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
   /* Recipe cards */
   .recipe-grid {
     display: grid;
@@ -237,12 +253,9 @@
     margin-bottom: 8px;
   }
 
-  .tag-batch     { background: var(--accent);    color: #fff; }
-  .tag-breakfast { background: var(--orange-bg); color: var(--orange); }
-  .tag-lunch     { background: var(--green-bg);  color: var(--green); }
-  .tag-dinner    { background: var(--red-bg);    color: var(--red); }
-  .tag-wok       { background: rgba(253,203,110,0.15); color: var(--orange); }
-  .tag-snack     { background: var(--blue-bg);   color: var(--blue); }
+  .tag-ip       { background: var(--accent);    color: #fff; }
+  .tag-wok      { background: rgba(253,203,110,0.15); color: var(--orange); }
+  .tag-oven     { background: var(--red-bg);    color: var(--red); }
 
   .recipe-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
   .recipe-meta { display: flex; gap: 16px; font-size: 0.8rem; color: var(--text-muted); }
@@ -264,67 +277,77 @@
   .recipe-body ol { padding-left: 20px; }
   .recipe-body ol li { padding: 6px 0; font-size: 0.85rem; color: var(--text-muted); }
 
-  .recipe-macros-bar { display: flex; gap: 8px; margin-top: 12px; }
+  .recipe-macros-bar { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 
-  /* Nutrition tables */
-  .nutrition-table {
+  /* Shopping list */
+  .shopping-category {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .shopping-category > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.15s;
+  }
+
+  .shopping-category > summary:hover { background: var(--surface-2); }
+
+  .shopping-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
-    margin-bottom: 24px;
   }
 
-  .nutrition-table th {
+  .shopping-table th {
     text-align: left;
-    padding: 10px 12px;
+    padding: 8px 20px;
     color: var(--accent-light);
     font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 2px solid var(--border);
+    background: var(--surface-2);
   }
 
-  .nutrition-table td {
-    padding: 8px 12px;
+  .shopping-table td {
+    padding: 9px 20px;
     color: var(--text-muted);
     border-bottom: 1px solid var(--border);
   }
 
-  .nutrition-table tr:last-child td { border-bottom: none; }
+  .shopping-table tr:last-child td { border-bottom: none; }
 
-  .nutrition-table .status-ok { color: var(--green); }
-  .nutrition-table .status-warn { color: var(--orange); }
-  .nutrition-table .status-supp { color: var(--blue); }
+  .shopping-table .item-name { color: var(--text); }
 
-  .nutrition-subtitle {
-    font-size: 0.9rem;
+  .stock-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
     font-weight: 600;
-    color: var(--text);
-    margin: 24px 0 12px;
-  }
-
-  .nutrition-note {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    margin-bottom: 12px;
-    font-size: 0.85rem;
+    background: var(--surface-2);
     color: var(--text-muted);
-    border-left: 3px solid var(--orange);
+    border: 1px solid var(--border);
   }
 
-  .supplement-card {
-    background: var(--blue-bg);
-    border: 1px solid var(--blue);
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    font-size: 0.85rem;
+  .category-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
   }
-
-  .supplement-card strong { color: var(--blue); }
 
   /* Responsive */
   @media (max-width: 640px) {
@@ -335,6 +358,7 @@
     .meal-macros { grid-column: 1 / -1; }
     .recipe-grid { grid-template-columns: 1fr; }
     .content { padding: 16px; }
+    .shopping-table th, .shopping-table td { padding: 8px 12px; }
   }
 </style>
 </head>
@@ -342,13 +366,14 @@
 
 <div class="header">
   <div class="header-top">
-    <h1>Weekly Meal Plan</h1>
-    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Week 3 &mdash; 18&ndash;24 March 2026</p>
+    <div>
+      <h1>Weekly Meal Plan</h1>
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Week 4 &mdash; 27 Mar &ndash; 2 Apr 2026</p>
+    </div>
     <div class="header-stats">
-      <div class="stat"><strong>2,358 / 3,000</strong>cal (M / V)</div>
-      <div class="stat"><strong>180g</strong>protein each</div>
+      <div class="stat"><strong>2,358 cal</strong>Michael</div>
+      <div class="stat"><strong>3,000 cal</strong>Vincent</div>
       <div class="stat"><strong>2</strong>people</div>
-      <div class="stat"><strong>~&pound;73</strong>/week</div>
     </div>
   </div>
 </div>
@@ -364,121 +389,35 @@
 
     <div class="batch-cook-banner">
       <div>
-        <h3>Week 3: 18&ndash;24 March 2026</h3>
-        <p class="rules-text">Every dinner cooked double &mdash; leftovers become next day&rsquo;s lunch. 3 wok nights + 2 IP favourites + mackerel Saturday + roast Monday. 180g protein per person per day. Calories: Michael 2,358 / Vincent 3,000 (Michael &minus;25% carbs, Vincent +extra). Varied veg throughout the week. 150ml kefir in the evening shake daily. 2 IP batch sessions per week. Budget ~&pound;65/week via Tesco. Vitamin D3 1,000 IU daily, year-round. Rotate recipes, track ratings, drop low-rated ones.</p>
+        <h3>Week 4: 27 Mar &ndash; 2 Apr 2026</h3>
+        <p class="rules-text">Every dinner cooked to 4 servings &mdash; leftovers become next day&rsquo;s lunch. Calories: Michael 2,358 / Vincent 3,000. 2 IP batch cook sessions: Tuesday (Chicken Thighs for Teriyaki Noodles) and Thursday (Beef Mince Base for Beef Chilli).</p>
       </div>
     </div>
 
     <div class="batch-cook-card">
       <div>
-        <span class="batch-label">Batch Cook &mdash; Session 1 (Tuesday)</span>
-        <span class="batch-detail">Beef Mince Base &mdash; 1.2 kg in IP &mdash; covers Fri chilli</span>
+        <span class="batch-label">Batch Cook &mdash; Session 1 (Tuesday 31 Mar)</span>
+        <span class="batch-detail">Batch Chicken Thighs (IP) &mdash; for Teriyaki Chicken Noodles</span>
       </div>
     </div>
 
     <div class="batch-cook-card">
       <div>
-        <span class="batch-label">Batch Cook &mdash; Session 2 (Wednesday)</span>
-        <span class="batch-detail">Chicken Thighs &mdash; 1.2 kg in IP &mdash; covers Wed curry + Thu teriyaki noodles</span>
+        <span class="batch-label">Batch Cook &mdash; Session 2 (Thursday 2 Apr)</span>
+        <span class="batch-detail">Batch Beef Mince Base (IP) &mdash; for IP Beef Chilli</span>
       </div>
     </div>
 
-    <!-- TUESDAY (open) -->
+    <!-- FRIDAY 27 MAR (open) -->
     <details class="day-card" open>
       <summary>
-        <span class="day-name">Tuesday</span>
-        <div class="day-summary-right">
-          <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,050 cal</span>
-            <span class="macro-pill macro-pro">~209g pro</span>
-            <span class="macro-pill macro-carb">~269g carb</span>
-            <span class="macro-pill macro-fat">~111g fat</span>
-          </div>
-          <span class="chevron">&#9662;</span>
-        </div>
-      </summary>
-      <div class="day-meals">
-        <div class="meal-row">
-          <span class="meal-label">Morning</span>
-          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
-          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Breakfast</span>
-          <span class="meal-name"><a class="meal-link" href="#scrambled-eggs">Scrambled eggs (4) on toast with cheese &amp; spinach</a></span>
-          <div class="meal-macros"><span>720 cal</span><span>52g P</span><span>34g C</span><span>38g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Lunch</span>
-          <span class="meal-name"><a class="meal-link" href="#chicken-wrap">Chicken wrap with peppers &amp; yoghurt dressing</a></span>
-          <div class="meal-macros"><span>640 cal</span><span>48g P</span><span>56g C</span><span>22g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#beef-broccoli">Beef &amp; Broccoli Stir Fry with rice</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook double &rarr; covers Wed lunch</span></span>
-          <div class="meal-macros"><span>780 cal</span><span>50g P</span><span>78g C</span><span>24g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Evening</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake (milk, banana, kefir) + PB on toast</a></span>
-          <div class="meal-macros"><span>730 cal</span><span>53g P</span><span>69g C</span><span>24g F</span></div>
-        </div>
-      </div>
-    </details>
-
-    <!-- WEDNESDAY -->
-    <details class="day-card">
-      <summary>
-        <span class="day-name">Wednesday</span>
-        <div class="day-summary-right">
-          <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,150 cal</span>
-            <span class="macro-pill macro-pro">~215g pro</span>
-            <span class="macro-pill macro-carb">~296g carb</span>
-            <span class="macro-pill macro-fat">~103g fat</span>
-          </div>
-          <span class="chevron">&#9662;</span>
-        </div>
-      </summary>
-      <div class="day-meals">
-        <div class="meal-row">
-          <span class="meal-label">Morning</span>
-          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
-          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Breakfast</span>
-          <span class="meal-name"><a class="meal-link" href="#scrambled-eggs">Scrambled eggs (4) on toast with baked beans</a></span>
-          <div class="meal-macros"><span>760 cal</span><span>50g P</span><span>52g C</span><span>34g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Lunch</span>
-          <span class="meal-name"><a class="meal-link" href="#beef-broccoli">Leftover beef &amp; broccoli stir fry</a> + steamed spinach</span>
-          <div class="meal-macros"><span>780 cal</span><span>50g P</span><span>78g C</span><span>24g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#chicken-curry">IP Chicken Curry with rice &amp; spinach</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook double &rarr; covers Thu lunch</span></span>
-          <div class="meal-macros"><span>820 cal</span><span>54g P</span><span>85g C</span><span>26g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Evening</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake (milk, kefir) + Greek yoghurt with honey</a></span>
-          <div class="meal-macros"><span>610 cal</span><span>55g P</span><span>49g C</span><span>16g F</span></div>
-        </div>
-      </div>
-    </details>
-
-    <!-- THURSDAY -->
-    <details class="day-card">
-      <summary>
-        <span class="day-name">Thursday</span>
+        <span class="day-name">Friday 27 Mar <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted);">— standalone lunch</span></span>
         <div class="day-summary-right">
           <div class="day-macros">
             <span class="macro-pill macro-cal">~3,210 cal</span>
-            <span class="macro-pill macro-pro">~201g pro</span>
-            <span class="macro-pill macro-carb">~350g carb</span>
-            <span class="macro-pill macro-fat">~101g fat</span>
+            <span class="macro-pill macro-pro">~209g pro</span>
+            <span class="macro-pill macro-carb">~299g carb</span>
+            <span class="macro-pill macro-fat">~110g fat</span>
           </div>
           <span class="chevron">&#9662;</span>
         </div>
@@ -491,37 +430,37 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Breakfast</span>
-          <span class="meal-name"><a class="meal-link" href="#overnight-oats">Overnight protein oats with banana, PB &amp; pumpkin seeds</a></span>
-          <div class="meal-macros"><span>720 cal</span><span>36g P</span><span>82g C</span><span>30g F</span></div>
+          <span class="meal-name">Scrambled eggs (4) on toast with cheese &amp; spinach</span>
+          <div class="meal-macros"><span>720 cal</span><span>52g P</span><span>34g C</span><span>38g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Lunch</span>
-          <span class="meal-name"><a class="meal-link" href="#chicken-curry">Leftover chicken curry</a> + steamed broccoli</span>
-          <div class="meal-macros"><span>820 cal</span><span>54g P</span><span>85g C</span><span>26g F</span></div>
+          <span class="meal-name">Tuna jacket potato with cottage cheese &amp; spinach</span>
+          <div class="meal-macros"><span>760 cal</span><span>50g P</span><span>82g C</span><span>18g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#teriyaki-chicken">Teriyaki Chicken Noodles</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook double &rarr; covers Fri lunch</span></span>
-          <div class="meal-macros"><span>760 cal</span><span>52g P</span><span>82g C</span><span>18g F</span></div>
+          <span class="meal-name"><a class="meal-link" href="#salmon-curry">IP Salmon &amp; Chickpea Coconut Curry with rice</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook 4 servings &rarr; Sat lunch</span></span>
+          <div class="meal-macros"><span>820 cal</span><span>48g P</span><span>82g C</span><span>28g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Evening</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake (milk, banana, kefir) + PB on toast</a></span>
+          <span class="meal-name">Protein shake (milk, banana, kefir 150ml) + peanut butter on toast</span>
           <div class="meal-macros"><span>730 cal</span><span>53g P</span><span>69g C</span><span>24g F</span></div>
         </div>
       </div>
     </details>
 
-    <!-- FRIDAY -->
+    <!-- SATURDAY 28 MAR -->
     <details class="day-card">
       <summary>
-        <span class="day-name">Friday</span>
+        <span class="day-name">Saturday 28 Mar</span>
         <div class="day-summary-right">
           <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,150 cal</span>
-            <span class="macro-pill macro-pro">~219g pro</span>
-            <span class="macro-pill macro-carb">~287g carb</span>
-            <span class="macro-pill macro-fat">~103g fat</span>
+            <span class="macro-pill macro-cal">~3,040 cal</span>
+            <span class="macro-pill macro-pro">~197g pro</span>
+            <span class="macro-pill macro-carb">~327g carb</span>
+            <span class="macro-pill macro-fat">~80g fat</span>
           </div>
           <span class="chevron">&#9662;</span>
         </div>
@@ -534,123 +473,37 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Breakfast</span>
-          <span class="meal-name"><a class="meal-link" href="#scrambled-eggs">Scrambled eggs (4) on toast with cheese &amp; spinach</a></span>
-          <div class="meal-macros"><span>720 cal</span><span>52g P</span><span>34g C</span><span>38g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Lunch</span>
-          <span class="meal-name"><a class="meal-link" href="#teriyaki-chicken">Leftover teriyaki chicken noodles</a> + steamed broccoli</span>
-          <div class="meal-macros"><span>760 cal</span><span>52g P</span><span>82g C</span><span>18g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#beef-chilli">IP Beef Chilli with rice &amp; Greek yoghurt</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook double &rarr; covers Sat lunch</span></span>
-          <div class="meal-macros"><span>860 cal</span><span>52g P</span><span>88g C</span><span>28g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Evening</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake (milk, kefir) + cottage cheese on toast</a></span>
-          <div class="meal-macros"><span>630 cal</span><span>57g P</span><span>51g C</span><span>16g F</span></div>
-        </div>
-      </div>
-    </details>
-
-    <!-- SATURDAY -->
-    <details class="day-card">
-      <summary>
-        <span class="day-name">Saturday</span>
-        <div class="day-summary-right">
-          <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,170 cal</span>
-            <span class="macro-pill macro-pro">~205g pro</span>
-            <span class="macro-pill macro-carb">~341g carb</span>
-            <span class="macro-pill macro-fat">~95g fat</span>
-          </div>
-          <span class="chevron">&#9662;</span>
-        </div>
-      </summary>
-      <div class="day-meals">
-        <div class="meal-row">
-          <span class="meal-label">Morning</span>
-          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
-          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Breakfast</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-pancakes">Protein pancakes with honey</a></span>
+          <span class="meal-name">Protein pancakes with honey</span>
           <div class="meal-macros"><span>640 cal</span><span>42g P</span><span>72g C</span><span>18g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Lunch</span>
-          <span class="meal-name"><a class="meal-link" href="#beef-chilli">Leftover beef chilli</a> + steamed spinach</span>
-          <div class="meal-macros"><span>860 cal</span><span>52g P</span><span>88g C</span><span>28g F</span></div>
+          <span class="meal-name"><a class="meal-link" href="#salmon-curry">Leftover salmon &amp; chickpea curry with rice</a> + steamed broccoli</span>
+          <div class="meal-macros"><span>820 cal</span><span>48g P</span><span>82g C</span><span>28g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#asian-braised-mackerel">IP Asian Braised Mackerel with rice &amp; steamed greens</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook double &rarr; covers Sun lunch. ~3.6g omega-3.</span></span>
-          <div class="meal-macros"><span>760 cal</span><span>52g P</span><span>80g C</span><span>22g F</span></div>
+          <span class="meal-name"><a class="meal-link" href="#wok-pork">Wok Pork &amp; Pak Choi with jasmine rice</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook 4 servings &rarr; Sun lunch</span></span>
+          <div class="meal-macros"><span>790 cal</span><span>46g P</span><span>92g C</span><span>16g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Evening</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake (milk, banana, kefir) + PB on toast</a></span>
-          <div class="meal-macros"><span>730 cal</span><span>53g P</span><span>69g C</span><span>24g F</span></div>
-        </div>
-      </div>
-    </details>
-
-    <!-- SUNDAY -->
-    <details class="day-card">
-      <summary>
-        <span class="day-name">Sunday</span>
-        <div class="day-summary-right">
-          <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,070 cal</span>
-            <span class="macro-pill macro-pro">~197g pro</span>
-            <span class="macro-pill macro-carb">~319g carb</span>
-            <span class="macro-pill macro-fat">~99g fat</span>
-          </div>
-          <span class="chevron">&#9662;</span>
-        </div>
-      </summary>
-      <div class="day-meals">
-        <div class="meal-row">
-          <span class="meal-label">Morning</span>
-          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
-          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Breakfast</span>
-          <span class="meal-name"><a class="meal-link" href="#overnight-oats">Overnight protein oats with banana, PB &amp; pumpkin seeds</a></span>
-          <div class="meal-macros"><span>720 cal</span><span>36g P</span><span>82g C</span><span>30g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Lunch</span>
-          <span class="meal-name"><a class="meal-link" href="#asian-braised-mackerel">Leftover mackerel</a> + steamed broccoli</span>
-          <div class="meal-macros"><span>760 cal</span><span>52g P</span><span>80g C</span><span>22g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#garlic-chilli-pork">Garlic Chilli Pork Stir Fry with rice</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook double &rarr; covers Mon lunch</span></span>
-          <div class="meal-macros"><span>800 cal</span><span>48g P</span><span>76g C</span><span>28g F</span></div>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Evening</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake (milk, kefir) + Greek yoghurt with honey</a></span>
+          <span class="meal-name">Protein shake (milk, kefir 150ml) + Greek yoghurt with honey</span>
           <div class="meal-macros"><span>610 cal</span><span>55g P</span><span>49g C</span><span>16g F</span></div>
         </div>
       </div>
     </details>
 
-    <!-- MONDAY -->
+    <!-- SUNDAY 29 MAR -->
     <details class="day-card">
       <summary>
-        <span class="day-name">Monday</span>
+        <span class="day-name">Sunday 29 Mar</span>
         <div class="day-summary-right">
           <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,270 cal</span>
-            <span class="macro-pill macro-pro">~211g pro</span>
-            <span class="macro-pill macro-carb">~283g carb</span>
-            <span class="macro-pill macro-fat">~123g fat</span>
+            <span class="macro-pill macro-cal">~3,300 cal</span>
+            <span class="macro-pill macro-pro">~196g pro</span>
+            <span class="macro-pill macro-carb">~361g carb</span>
+            <span class="macro-pill macro-fat">~94g fat</span>
           </div>
           <span class="chevron">&#9662;</span>
         </div>
@@ -663,30 +516,202 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Breakfast</span>
-          <span class="meal-name"><a class="meal-link" href="#scrambled-eggs">Scrambled eggs (4) on toast with cheese &amp; spinach</a></span>
+          <span class="meal-name">Overnight protein oats with banana, peanut butter &amp; pumpkin seeds</span>
+          <div class="meal-macros"><span>720 cal</span><span>36g P</span><span>82g C</span><span>30g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#wok-pork">Leftover pork &amp; pak choi with rice</a></span>
+          <div class="meal-macros"><span>790 cal</span><span>46g P</span><span>92g C</span><span>16g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#beef-sweet-potato">IP Beef &amp; Sweet Potato Stew with rice</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook 4 servings &rarr; Mon lunch</span></span>
+          <div class="meal-macros"><span>880 cal</span><span>55g P</span><span>86g C</span><span>22g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name">Protein shake (milk, banana, kefir 150ml) + peanut butter on toast</span>
+          <div class="meal-macros"><span>730 cal</span><span>53g P</span><span>69g C</span><span>24g F</span></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- MONDAY 30 MAR -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Monday 30 Mar</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">~3,000 cal</span>
+            <span class="macro-pill macro-pro">~220g pro</span>
+            <span class="macro-pill macro-carb">~231g carb</span>
+            <span class="macro-pill macro-fat">~102g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Morning</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name">Scrambled eggs (4) on toast with cheese &amp; spinach</span>
           <div class="meal-macros"><span>720 cal</span><span>52g P</span><span>34g C</span><span>38g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Lunch</span>
-          <span class="meal-name"><a class="meal-link" href="#garlic-chilli-pork">Leftover garlic chilli pork stir fry</a> + steamed spinach</span>
-          <div class="meal-macros"><span>800 cal</span><span>48g P</span><span>76g C</span><span>28g F</span></div>
+          <span class="meal-name"><a class="meal-link" href="#beef-sweet-potato">Leftover beef &amp; sweet potato stew with rice</a></span>
+          <div class="meal-macros"><span>880 cal</span><span>55g P</span><span>86g C</span><span>22g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#sunday-roast">Roast Chicken Thighs with roast potatoes &amp; veg</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook double &rarr; covers Tue lunch next week</span></span>
-          <div class="meal-macros"><span>840 cal</span><span>52g P</span><span>72g C</span><span>30g F</span></div>
+          <span class="meal-name"><a class="meal-link" href="#sheet-pan-chicken">Oven Chicken Thigh &amp; Roasted Veg Sheet Pan</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook 4 servings &rarr; Tue lunch</span></span>
+          <div class="meal-macros"><span>610 cal</span><span>52g P</span><span>30g C</span><span>24g F</span></div>
         </div>
         <div class="meal-row">
           <span class="meal-label">Evening</span>
-          <span class="meal-name"><a class="meal-link" href="#protein-shake">Protein shake (milk, banana, kefir) + PB on toast</a></span>
-          <div class="meal-macros"><span>730 cal</span><span>53g P</span><span>69g C</span><span>24g F</span></div>
+          <span class="meal-name">Protein shake (milk, kefir 150ml) + Greek yoghurt with honey</span>
+          <div class="meal-macros"><span>610 cal</span><span>55g P</span><span>49g C</span><span>16g F</span></div>
         </div>
-        <div class="day-note">Order next week&rsquo;s Tesco shop tonight.</div>
       </div>
     </details>
 
-  </details><!-- /week-plan -->
+    <!-- TUESDAY 31 MAR — BATCH COOK DAY -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Tuesday 31 Mar <span class="batch-day-badge">Batch Cook</span></span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">~3,000 cal</span>
+            <span class="macro-pill macro-pro">~199g pro</span>
+            <span class="macro-pill macro-carb">~295g carb</span>
+            <span class="macro-pill macro-fat">~98g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Morning</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name">Overnight protein oats with banana, peanut butter &amp; pumpkin seeds</span>
+          <div class="meal-macros"><span>720 cal</span><span>36g P</span><span>82g C</span><span>30g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#sheet-pan-chicken">Leftover chicken thigh &amp; roasted veg</a></span>
+          <div class="meal-macros"><span>610 cal</span><span>52g P</span><span>30g C</span><span>24g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#teriyaki-noodles">Teriyaki Chicken Noodles with broccoli &amp; carrots</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook 4 servings &rarr; Wed lunch</span></span>
+          <div class="meal-macros"><span>760 cal</span><span>52g P</span><span>82g C</span><span>18g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name">Protein shake (milk, banana, kefir 150ml) + peanut butter on toast</span>
+          <div class="meal-macros"><span>730 cal</span><span>53g P</span><span>69g C</span><span>24g F</span></div>
+        </div>
+        <div class="day-note">Batch cook: Chicken Thighs in IP today &mdash; shred and store for Teriyaki Noodles.</div>
+      </div>
+    </details>
 
+    <!-- WEDNESDAY 1 APR -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Wednesday 1 Apr</span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">~2,990 cal</span>
+            <span class="macro-pill macro-pro">~219g pro</span>
+            <span class="macro-pill macro-carb">~245g carb</span>
+            <span class="macro-pill macro-fat">~90g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Morning</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name">Scrambled eggs (4) on toast with cheese &amp; spinach</span>
+          <div class="meal-macros"><span>720 cal</span><span>52g P</span><span>34g C</span><span>38g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#teriyaki-noodles">Leftover teriyaki chicken noodles</a> + steamed spinach</span>
+          <div class="meal-macros"><span>760 cal</span><span>52g P</span><span>82g C</span><span>18g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#meatball-soup">IP Turkey &amp; Spinach Meatball Soup with crusty bread</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook 4 servings &rarr; Thu lunch</span></span>
+          <div class="meal-macros"><span>720 cal</span><span>54g P</span><span>48g C</span><span>16g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name">Protein shake (milk, kefir 150ml) + Greek yoghurt with honey</span>
+          <div class="meal-macros"><span>610 cal</span><span>55g P</span><span>49g C</span><span>16g F</span></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- THURSDAY 2 APR — BATCH COOK DAY -->
+    <details class="day-card">
+      <summary>
+        <span class="day-name">Thursday 2 Apr <span class="batch-day-badge">Batch Cook</span></span>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">~3,130 cal</span>
+            <span class="macro-pill macro-pro">~207g pro</span>
+            <span class="macro-pill macro-carb">~309g carb</span>
+            <span class="macro-pill macro-fat">~88g fat</span>
+          </div>
+          <span class="chevron">&#9662;</span>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="meal-row">
+          <span class="meal-label">Morning</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <div class="meal-macros"><span>180 cal</span><span>6g P</span><span>32g C</span><span>2g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name">Protein pancakes with honey</span>
+          <div class="meal-macros"><span>640 cal</span><span>42g P</span><span>72g C</span><span>18g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name"><a class="meal-link" href="#meatball-soup">Leftover turkey &amp; spinach meatball soup</a> + crusty bread</span>
+          <div class="meal-macros"><span>720 cal</span><span>54g P</span><span>48g C</span><span>16g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#beef-chilli">IP Beef Chilli with rice &amp; Greek yoghurt</a> <span style="color:var(--text-muted);font-size:0.85em;">&mdash; cook 4 servings &rarr; Fri lunch next week</span></span>
+          <div class="meal-macros"><span>860 cal</span><span>52g P</span><span>88g C</span><span>28g F</span></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name">Protein shake (milk, banana, kefir 150ml) + peanut butter on toast</span>
+          <div class="meal-macros"><span>730 cal</span><span>53g P</span><span>69g C</span><span>24g F</span></div>
+        </div>
+        <div class="day-note">Batch cook: Beef Mince Base in IP today &mdash; use for Beef Chilli tonight, store surplus for next week.</div>
+      </div>
+    </details>
+
+  </details>
 
   <!-- ==================== RECIPES ==================== -->
   <details class="section-accordion" id="recipes">
@@ -697,60 +722,204 @@
 
     <div class="recipe-grid">
 
-      <!-- BEEF & BROCCOLI STIR FRY -->
-      <details class="recipe-card" id="beef-broccoli">
+      <!-- IP SALMON & CHICKPEA COCONUT CURRY -->
+      <details class="recipe-card" id="salmon-curry">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
-              <span class="recipe-tag tag-wok">wok</span>
-              <h3>Beef &amp; Broccoli Stir Fry</h3>
-              <div class="recipe-meta"><span>Wok</span><span>Prep: 10 min</span><span>Cook: 12 min</span></div>
+              <span class="recipe-tag tag-ip">IP</span>
+              <h3>IP Salmon &amp; Chickpea Coconut Curry</h3>
+              <div class="recipe-meta"><span>Instant Pot</span><span>4 servings</span><span>820 cal/serving</span></div>
             </div>
             <span class="chevron">&#9662;</span>
           </div>
         </summary>
         <div class="recipe-body">
           <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">780 cal</span>
-            <span class="macro-pill macro-pro">50g pro</span>
-            <span class="macro-pill macro-carb">78g carb</span>
-            <span class="macro-pill macro-fat">24g fat</span>
+            <span class="macro-pill macro-cal">820 cal</span>
+            <span class="macro-pill macro-pro">48g pro</span>
+            <span class="macro-pill macro-carb">82g carb</span>
+            <span class="macro-pill macro-fat">28g fat</span>
           </div>
-          <div class="recipe-section-title">Ingredients (serves 2 &mdash; cook double)</div>
+          <div class="recipe-section-title">Ingredients (4 servings, with rice)</div>
           <ul>
-            <li>500g beef stir fry strips</li>
-            <li>2 large heads broccoli, small florets</li>
-            <li>3 cloves garlic, minced</li>
-            <li>1 thumb ginger, grated</li>
-            <li>3 tbsp soy sauce</li>
-            <li>1 tbsp oyster sauce</li>
-            <li>1 tsp sesame oil</li>
-            <li>1 tsp cornflour + 2 tbsp water</li>
-            <li>1 tbsp vegetable oil</li>
-            <li>150g rice per person (dry)</li>
+            <li>800g salmon fillets, skinless, cubed</li>
+            <li>2 tins chickpeas, drained</li>
+            <li>1 tin coconut milk (400ml)</li>
+            <li>1 tin chopped tomatoes</li>
+            <li>200g baby spinach</li>
+            <li>2 onions, diced</li>
+            <li>4 cloves garlic, minced</li>
+            <li>2cm ginger, grated</li>
+            <li>2 tbsp curry powder</li>
+            <li>1 tsp cumin</li>
+            <li>1 tbsp olive oil</li>
+            <li>Salt &amp; pepper</li>
+            <li>300g jasmine rice (to serve)</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>Mix soy, oyster sauce, sesame oil, cornflour slurry in a bowl</li>
-            <li>Wok smoking hot, add veg oil</li>
-            <li>Beef in single layer &mdash; don&rsquo;t stir for 60 sec to sear</li>
-            <li>Stir fry 2&ndash;3 min until browned, remove</li>
-            <li>Splash more oil, broccoli 3&ndash;4 min</li>
-            <li>Garlic + ginger 30 sec</li>
-            <li>Return beef, pour sauce, toss 1&ndash;2 min until glossy</li>
-            <li>Serve over rice</li>
+            <li>Set IP to SAUTE, add oil.</li>
+            <li>Cook onions 3 min, add garlic, ginger, curry powder, cumin &mdash; stir 1 min.</li>
+            <li>Add chickpeas, tomatoes, coconut milk, salt and pepper.</li>
+            <li>Seal lid, HIGH PRESSURE 3 min.</li>
+            <li>Quick release.</li>
+            <li>Set to SAUTE (low), lay salmon on top.</li>
+            <li>Simmer 5&ndash;6 min until just cooked.</li>
+            <li>Break salmon into chunks, stir in spinach until wilted.</li>
+            <li>Serve over rice.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- WOK PORK & PAK CHOI -->
+      <details class="recipe-card" id="wok-pork">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-wok">Wok</span>
+              <h3>Wok Pork &amp; Pak Choi with Jasmine Rice</h3>
+              <div class="recipe-meta"><span>Wok</span><span>4 servings</span><span>790 cal/serving</span></div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">790 cal</span>
+            <span class="macro-pill macro-pro">46g pro</span>
+            <span class="macro-pill macro-carb">92g carb</span>
+            <span class="macro-pill macro-fat">16g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (4 servings, with rice)</div>
+          <ul>
+            <li>700g pork mince</li>
+            <li>3 heads pak choi, stems and leaves separated</li>
+            <li>4 spring onions, sliced</li>
+            <li>4 cloves garlic, minced</li>
+            <li>2cm ginger, grated</li>
+            <li>3 tbsp soy sauce</li>
+            <li>2 tbsp oyster sauce</li>
+            <li>1 tsp sesame oil</li>
+            <li>1 tbsp vegetable oil</li>
+            <li>300g jasmine rice (to serve)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Cook rice.</li>
+            <li>Heat wok until smoking, add oil.</li>
+            <li>Sear pork mince in batches until browned.</li>
+            <li>Add garlic and ginger, 1 min.</li>
+            <li>Add soy and oyster sauce, toss.</li>
+            <li>Add pak choi stems, 2 min.</li>
+            <li>Add pak choi leaves and spring onions, 1&ndash;2 min.</li>
+            <li>Drizzle sesame oil.</li>
+            <li>Serve over rice.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- IP BEEF & SWEET POTATO STEW -->
+      <details class="recipe-card" id="beef-sweet-potato">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-ip">IP</span>
+              <h3>IP Beef &amp; Sweet Potato Stew</h3>
+              <div class="recipe-meta"><span>Instant Pot</span><span>4 servings</span><span>880 cal/serving</span></div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">880 cal</span>
+            <span class="macro-pill macro-pro">55g pro</span>
+            <span class="macro-pill macro-carb">86g carb</span>
+            <span class="macro-pill macro-fat">22g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (4 servings, with rice)</div>
+          <ul>
+            <li>800g braising beef, 3cm chunks</li>
+            <li>2 large sweet potatoes (~600g), cubed</li>
+            <li>2 tins chopped tomatoes</li>
+            <li>200g fine green beans, trimmed</li>
+            <li>1 red pepper, diced</li>
+            <li>1 onion, diced</li>
+            <li>4 cloves garlic</li>
+            <li>500ml beef stock</li>
+            <li>2 tsp smoked paprika</li>
+            <li>1 tsp dried thyme</li>
+            <li>1 tbsp olive oil</li>
+            <li>Salt &amp; pepper</li>
+            <li>300g jasmine rice (to serve)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>SAUTE &mdash; brown beef in batches, set aside.</li>
+            <li>Saute onion 3 min, garlic 1 min, add paprika and thyme.</li>
+            <li>Return beef, add tomatoes, stock, sweet potato, red pepper.</li>
+            <li>HIGH PRESSURE 35 min.</li>
+            <li>Natural release 10 min.</li>
+            <li>SAUTE &mdash; add green beans, simmer 4&ndash;5 min.</li>
+            <li>Season. Serve over rice.</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- OVEN CHICKEN THIGH SHEET PAN -->
+      <details class="recipe-card" id="sheet-pan-chicken">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-oven">Oven</span>
+              <h3>Oven Chicken Thigh &amp; Roasted Veg Sheet Pan</h3>
+              <div class="recipe-meta"><span>Oven</span><span>4 servings</span><span>610 cal/serving</span></div>
+            </div>
+            <span class="chevron">&#9662;</span>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-macros-bar">
+            <span class="macro-pill macro-cal">610 cal</span>
+            <span class="macro-pill macro-pro">52g pro</span>
+            <span class="macro-pill macro-carb">30g carb</span>
+            <span class="macro-pill macro-fat">24g fat</span>
+          </div>
+          <div class="recipe-section-title">Ingredients (4 servings)</div>
+          <ul>
+            <li>8 bone-in skin-on chicken thighs (~1.2kg)</li>
+            <li>400g baby potatoes, halved</li>
+            <li>2 heads broccoli, florets</li>
+            <li>2 red peppers, sliced</li>
+            <li>1 red onion, wedges</li>
+            <li>4 cloves garlic, skin on</li>
+            <li>3 tbsp olive oil</li>
+            <li>2 tsp Italian herbs</li>
+            <li>1 tsp smoked paprika</li>
+            <li>1 lemon</li>
+            <li>Salt &amp; pepper</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Preheat oven 200&deg;C.</li>
+            <li>Toss potatoes with oil, salt, pepper &mdash; roast 20 min.</li>
+            <li>Season chicken with oil, herbs, paprika, salt, pepper.</li>
+            <li>Add chicken, broccoli, peppers, onion, garlic to tray.</li>
+            <li>Roast 40&ndash;45 min until golden and cooked through.</li>
+            <li>Squeeze lemon over before serving.</li>
           </ol>
         </div>
       </details>
 
       <!-- TERIYAKI CHICKEN NOODLES -->
-      <details class="recipe-card" id="teriyaki-chicken">
+      <details class="recipe-card" id="teriyaki-noodles">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
-              <span class="recipe-tag tag-wok">wok</span>
+              <span class="recipe-tag tag-wok">Wok</span>
               <h3>Teriyaki Chicken Noodles</h3>
-              <div class="recipe-meta"><span>Wok</span><span>Prep: 10 min</span><span>Cook: 15 min</span></div>
+              <div class="recipe-meta"><span>Wok</span><span>4 servings</span><span>760 cal/serving</span></div>
             </div>
             <span class="chevron">&#9662;</span>
           </div>
@@ -762,140 +931,101 @@
             <span class="macro-pill macro-carb">82g carb</span>
             <span class="macro-pill macro-fat">18g fat</span>
           </div>
-          <div class="recipe-section-title">Ingredients (serves 2 &mdash; cook double)</div>
+          <div class="recipe-section-title">Ingredients (4 servings)</div>
           <ul>
-            <li>500g batch-cooked shredded chicken</li>
+            <li>800g shredded batch chicken thighs</li>
             <li>300g egg noodles (dry)</li>
-            <li>2 pak choi, quartered</li>
-            <li>1 red pepper, sliced</li>
-            <li>2 spring onions, sliced</li>
-            <li>2 cloves garlic, minced</li>
-            <li>1 thumb ginger, grated</li>
+            <li>2 heads broccoli, small florets</li>
+            <li>2 carrots, julienned</li>
+            <li>4 spring onions, sliced</li>
+            <li>4 cloves garlic, minced</li>
+            <li>1 tbsp vegetable oil</li>
+            <li>2 tsp sesame seeds</li>
           </ul>
           <div class="recipe-section-title">Teriyaki Sauce</div>
           <ul>
-            <li>3 tbsp soy sauce</li>
-            <li>1 tbsp honey</li>
-            <li>1 tbsp rice vinegar</li>
+            <li>6 tbsp soy sauce</li>
+            <li>4 tbsp honey</li>
+            <li>2 tbsp mirin</li>
             <li>1 tsp sesame oil</li>
-            <li>1 tsp cornflour + 1 tbsp water</li>
+            <li>2 tsp cornflour mixed with 2 tbsp cold water</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>Cook noodles per packet, drain, toss with sesame oil</li>
-            <li>Wok smoking hot, add veg oil</li>
-            <li>Pak choi + pepper 2&ndash;3 min until slightly charred</li>
-            <li>Garlic + ginger 30 sec</li>
-            <li>Add chicken, toss 2 min</li>
-            <li>Pour teriyaki sauce, stir fry 1&ndash;2 min until glossy</li>
-            <li>Add noodles, toss everything together</li>
-            <li>Top with spring onions</li>
+            <li>Cook noodles, drain, set aside.</li>
+            <li>Mix sauce.</li>
+            <li>Wok &mdash; stir fry broccoli and carrots 3&ndash;4 min.</li>
+            <li>Add chicken, heat through 2 min.</li>
+            <li>Pour sauce, toss, bubble 1&ndash;2 min.</li>
+            <li>Add noodles, toss.</li>
+            <li>Top with spring onions and sesame seeds.</li>
           </ol>
         </div>
       </details>
 
-      <!-- GARLIC CHILLI PORK -->
-      <details class="recipe-card" id="garlic-chilli-pork">
+      <!-- IP TURKEY & SPINACH MEATBALL SOUP -->
+      <details class="recipe-card" id="meatball-soup">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
-              <span class="recipe-tag tag-wok">wok</span>
-              <h3>Garlic Chilli Pork Stir Fry</h3>
-              <div class="recipe-meta"><span>Wok</span><span>Prep: 10 min</span><span>Cook: 12 min</span></div>
+              <span class="recipe-tag tag-ip">IP</span>
+              <h3>IP Turkey &amp; Spinach Meatball Soup</h3>
+              <div class="recipe-meta"><span>Instant Pot</span><span>4 servings</span><span>720 cal/serving</span></div>
             </div>
             <span class="chevron">&#9662;</span>
           </div>
         </summary>
         <div class="recipe-body">
           <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">800 cal</span>
-            <span class="macro-pill macro-pro">48g pro</span>
-            <span class="macro-pill macro-carb">76g carb</span>
-            <span class="macro-pill macro-fat">28g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (serves 2 &mdash; cook double)</div>
-          <ul>
-            <li>600g pork loin steaks, sliced thin</li>
-            <li>1 large courgette, halved and sliced</li>
-            <li>1 red pepper, sliced</li>
-            <li>4 cloves garlic, sliced</li>
-            <li>2 red chillies, sliced (deseed for less heat)</li>
-            <li>1 bunch spring onions, cut 3cm</li>
-          </ul>
-          <div class="recipe-section-title">Sauce</div>
-          <ul>
-            <li>3 tbsp soy sauce</li>
-            <li>1 tbsp oyster sauce</li>
-            <li>1 tbsp rice vinegar</li>
-            <li>1 tsp brown sugar</li>
-            <li>1 tsp sesame oil</li>
-            <li>1 tsp cornflour + 2 tbsp water</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Mix sauce ingredients in a bowl</li>
-            <li>Wok smoking hot, add veg oil</li>
-            <li>Pork single layer &mdash; 60 sec without stirring for colour</li>
-            <li>Stir fry 3&ndash;4 min until cooked, remove</li>
-            <li>Splash oil, courgette + pepper 3 min</li>
-            <li>Garlic + chillies + spring onions 30 sec</li>
-            <li>Return pork, pour sauce, toss 1&ndash;2 min</li>
-            <li>Serve over rice with steamed broccoli</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- CHICKEN CURRY -->
-      <details class="recipe-card" id="chicken-curry">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-dinner">dinner</span>
-              <h3>IP Chicken Curry</h3>
-              <div class="recipe-meta"><span>Instant Pot</span><span>Prep: 10 min</span><span>Cook: 15 min SAUTE</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">820 cal</span>
+            <span class="macro-pill macro-cal">720 cal</span>
             <span class="macro-pill macro-pro">54g pro</span>
-            <span class="macro-pill macro-carb">85g carb</span>
-            <span class="macro-pill macro-fat">26g fat</span>
+            <span class="macro-pill macro-carb">48g carb</span>
+            <span class="macro-pill macro-fat">16g fat</span>
           </div>
-          <div class="recipe-section-title">Ingredients (serves 2)</div>
+          <div class="recipe-section-title">Meatball Ingredients</div>
           <ul>
-            <li>500g shredded chicken</li>
-            <li>1 tin chopped tomatoes</li>
+            <li>800g turkey mince</li>
+            <li>1 egg</li>
+            <li>50g breadcrumbs</li>
+            <li>30g Parmesan, grated</li>
+            <li>2 cloves garlic, minced</li>
+            <li>1 tsp Italian seasoning</li>
+            <li>Salt &amp; pepper</li>
+          </ul>
+          <div class="recipe-section-title">Soup Ingredients</div>
+          <ul>
+            <li>2 tins chopped tomatoes</li>
+            <li>800ml chicken stock</li>
+            <li>1 tin cannellini beans, drained</li>
+            <li>200g baby spinach</li>
             <li>1 onion, diced</li>
-            <li>2 cloves garlic</li>
-            <li>2 tbsp curry paste</li>
-            <li>100ml coconut milk</li>
+            <li>3 cloves garlic, minced</li>
             <li>1 tbsp olive oil</li>
-            <li>Handful of spinach</li>
-            <li>150g rice (dry, for 2)</li>
+            <li>1 tsp Italian seasoning</li>
+            <li>2 slices crusty bread per person (to serve)</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>IP SAUTE: oil, onion 3 min, garlic 1 min</li>
-            <li>Add curry paste, stir 1 min</li>
-            <li>Add tomatoes and coconut milk</li>
-            <li>Add chicken, SAUTE 3&ndash;4 min</li>
-            <li>Stir in spinach until wilted</li>
-            <li>Serve over rice with steamed broccoli</li>
+            <li>Mix meatball ingredients, roll into ~20 balls.</li>
+            <li>SAUTE &mdash; cook onion 3 min, garlic 1 min.</li>
+            <li>Add tomatoes, stock, beans, seasoning.</li>
+            <li>Gently lower meatballs in.</li>
+            <li>HIGH PRESSURE 10 min.</li>
+            <li>Quick release.</li>
+            <li>Stir in spinach until wilted.</li>
+            <li>Serve with crusty bread.</li>
           </ol>
         </div>
       </details>
 
-      <!-- BEEF CHILLI -->
+      <!-- IP BEEF CHILLI -->
       <details class="recipe-card" id="beef-chilli">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
-              <span class="recipe-tag tag-dinner">dinner</span>
+              <span class="recipe-tag tag-ip">IP</span>
               <h3>IP Beef Chilli</h3>
-              <div class="recipe-meta"><span>Instant Pot</span><span>Prep: 5 min</span><span>Cook: 10 min SAUTE</span></div>
+              <div class="recipe-meta"><span>Instant Pot</span><span>4 servings</span><span>860 cal/serving</span></div>
             </div>
             <span class="chevron">&#9662;</span>
           </div>
@@ -907,426 +1037,207 @@
             <span class="macro-pill macro-carb">88g carb</span>
             <span class="macro-pill macro-fat">28g fat</span>
           </div>
-          <div class="recipe-section-title">Ingredients (serves 2)</div>
+          <div class="recipe-section-title">Ingredients (4 servings, with rice &amp; yoghurt)</div>
           <ul>
-            <li>500g batch mince base</li>
-            <li>1 tin kidney beans, drained</li>
-            <li>1 tsp chilli powder</li>
+            <li>Full batch beef mince base (~1.2kg, cooked)</li>
+            <li>2 tins kidney beans, drained</li>
+            <li>2 tsp chilli powder</li>
             <li>1 tsp cumin</li>
-            <li>1 tbsp tomato puree</li>
-            <li>150g rice (dry, for 2)</li>
-            <li>Greek yoghurt</li>
+            <li>1 tsp smoked paprika</li>
+            <li>200g frozen sweetcorn</li>
+            <li>Salt &amp; pepper</li>
+            <li>300g jasmine rice (to serve)</li>
+            <li>4 tbsp Greek yoghurt (to serve)</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>IP SAUTE: mince base + beans + spices + puree</li>
-            <li>Simmer 10 min, stir occasionally</li>
-            <li>Serve over rice with Greek yoghurt and steamed veg</li>
+            <li>Cook rice.</li>
+            <li>SAUTE &mdash; add mince base, kidney beans, spices.</li>
+            <li>Simmer 10 min until thickened.</li>
+            <li>Add sweetcorn, cook 3 min.</li>
+            <li>Season.</li>
+            <li>Serve over rice with Greek yoghurt.</li>
           </ol>
         </div>
       </details>
 
-      <!-- ASIAN BRAISED MACKEREL -->
-      <details class="recipe-card" id="asian-braised-mackerel">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-dinner">dinner</span>
-              <h3>IP Asian Braised Mackerel</h3>
-              <div class="recipe-meta"><span>Instant Pot</span><span>Prep: 5 min</span><span>Cook: 10 min SAUTE</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">760 cal</span>
-            <span class="macro-pill macro-pro">52g pro</span>
-            <span class="macro-pill macro-carb">80g carb</span>
-            <span class="macro-pill macro-fat">22g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (serves 2) &mdash; ~3.6g omega-3 per serving</div>
-          <ul>
-            <li>4 tins mackerel in brine (145g each), drained</li>
-            <li>3 tbsp soy sauce</li>
-            <li>1 tbsp dark soy sauce</li>
-            <li>1 tbsp oyster sauce</li>
-            <li>1 tsp five spice</li>
-            <li>3 cloves garlic, smashed</li>
-            <li>1 thumb ginger, sliced</li>
-            <li>2 tbsp rice vinegar</li>
-            <li>100ml water</li>
-            <li>1 tsp sesame oil</li>
-            <li>Jasmine rice + steamed greens</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Mix soy, dark soy, oyster sauce, five spice, vinegar, water</li>
-            <li>IP SAUTE: garlic + ginger in oil, 1 min</li>
-            <li>Pour sauce in, bring to simmer</li>
-            <li>Add mackerel gently &mdash; don&rsquo;t stir hard</li>
-            <li>Simmer 5&ndash;7 min until sauce thickens</li>
-            <li>Stir in sesame oil</li>
-            <li>Serve over rice with steamed greens</li>
-          </ol>
-        </div>
-      </details>
+    </div>
+  </details>
 
-      <!-- ROAST CHICKEN THIGHS -->
-      <details class="recipe-card" id="sunday-roast">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-dinner">dinner</span>
-              <h3>Roast Chicken Thighs</h3>
-              <div class="recipe-meta"><span>IP + Oven</span><span>Prep: 10 min</span><span>Cook: 15 min HP + 10 min oven</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">840 cal</span>
-            <span class="macro-pill macro-pro">52g pro</span>
-            <span class="macro-pill macro-carb">72g carb</span>
-            <span class="macro-pill macro-fat">30g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (serves 2)</div>
-          <ul>
-            <li>6 bone-in chicken thighs (skin on)</li>
-            <li>4 medium potatoes, quartered</li>
-            <li>200g frozen veg or carrots/peas</li>
-            <li>1 tbsp olive oil</li>
-            <li>Garlic powder, paprika, salt, pepper</li>
-            <li>200ml chicken stock</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Season thighs with spices</li>
-            <li>IP SAUTE: sear skin-down 3 min</li>
-            <li>Add stock and potatoes</li>
-            <li>Seal &rarr; HIGH PRESSURE 15 min, quick release</li>
-            <li>Optional: grill thighs 5&ndash;10 min to crisp</li>
-            <li>Steam veg, serve with cooking liquid as gravy</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- BATCH CHICKEN -->
-      <details class="recipe-card" id="batch-chicken">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-batch">batch</span>
-              <h3>Batch Chicken Thighs</h3>
-              <div class="recipe-meta"><span>Instant Pot</span><span>Prep: 5 min</span><span>Cook: 25 min HP + 10 NR</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">330 cal</span>
-            <span class="macro-pill macro-pro">52g pro</span>
-            <span class="macro-pill macro-carb">0g carb</span>
-            <span class="macro-pill macro-fat">12g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients &mdash; Makes ~1.2kg cooked</div>
-          <ul>
-            <li>2kg boneless, skinless chicken thighs</li>
-            <li>500ml chicken stock (1 cube + water)</li>
-            <li>1 tsp garlic powder, 1 tsp paprika</li>
-            <li>Salt and pepper</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Add stock to IP</li>
-            <li>Season chicken, place in stock</li>
-            <li>Seal &rarr; HIGH PRESSURE 25 min</li>
-            <li>Natural release 10 min</li>
-            <li>Shred with two forks</li>
-            <li>Store in containers &mdash; use within 4 days</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- BATCH MINCE -->
-      <details class="recipe-card" id="batch-mince">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-batch">batch</span>
-              <h3>Batch Beef Mince Base</h3>
-              <div class="recipe-meta"><span>Instant Pot</span><span>Prep: 10 min</span><span>Cook: 20 min HP + 10 NR</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">380 cal</span>
-            <span class="macro-pill macro-pro">42g pro</span>
-            <span class="macro-pill macro-carb">8g carb</span>
-            <span class="macro-pill macro-fat">20g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients &mdash; Makes ~1.2kg cooked</div>
-          <ul>
-            <li>1.5kg beef mince (10-15% fat)</li>
-            <li>2 tins chopped tomatoes</li>
-            <li>2 onions, diced</li>
-            <li>3 cloves garlic, minced</li>
-            <li>1 tbsp olive oil</li>
-            <li>1 tsp cumin, 1 tsp paprika</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>IP SAUTE: oil, brown mince in batches, set aside</li>
-            <li>Saute onions 3 min, garlic 1 min</li>
-            <li>Return mince, add tomatoes + spices</li>
-            <li>Seal &rarr; HIGH PRESSURE 20 min</li>
-            <li>Natural release 10 min</li>
-            <li>Split into portions</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- BREAKFAST: OVERNIGHT OATS -->
-      <details class="recipe-card" id="overnight-oats">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-breakfast">breakfast</span>
-              <h3>Overnight Protein Oats</h3>
-              <div class="recipe-meta"><span>No Cook</span><span>Prep: 5 min (night before)</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">720 cal</span>
-            <span class="macro-pill macro-pro">36g pro</span>
-            <span class="macro-pill macro-carb">82g carb</span>
-            <span class="macro-pill macro-fat">30g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (per serving)</div>
-          <ul>
-            <li>80g porridge oats</li>
-            <li>200ml semi-skimmed milk</li>
-            <li>100g Greek yoghurt (0% fat)</li>
-            <li>1 banana, sliced</li>
-            <li>1 tbsp peanut butter</li>
-            <li><strong>30g pumpkin seeds</strong> &mdash; zinc, magnesium, omega-3 ALA</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Mix oats, milk, yoghurt, pumpkin seeds in a jar</li>
-            <li>Refrigerate overnight</li>
-            <li>Morning: top with banana and peanut butter</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- BREAKFAST: SCRAMBLED EGGS -->
-      <details class="recipe-card" id="scrambled-eggs">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-breakfast">breakfast</span>
-              <h3>Scrambled Eggs on Toast</h3>
-              <div class="recipe-meta"><span>Hob</span><span>Prep: 2 min</span><span>Cook: 5 min</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">580 cal</span>
-            <span class="macro-pill macro-pro">40g pro</span>
-            <span class="macro-pill macro-carb">34g carb</span>
-            <span class="macro-pill macro-fat">30g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (per serving)</div>
-          <ul>
-            <li>4 large eggs</li>
-            <li>2 slices wholemeal toast</li>
-            <li>30g cheddar, grated</li>
-            <li>Splash of milk, knob of butter</li>
-            <li>Optional: spinach</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Whisk eggs with milk, salt, pepper</li>
-            <li>Melt butter in pan over medium-low</li>
-            <li>Pour eggs, stir gently</li>
-            <li>Fold in cheese (and spinach) when nearly set</li>
-            <li>Serve on toast</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- BREAKFAST: PROTEIN PANCAKES -->
-      <details class="recipe-card" id="protein-pancakes">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-breakfast">breakfast</span>
-              <h3>Protein Pancakes</h3>
-              <div class="recipe-meta"><span>Hob</span><span>Prep: 5 min</span><span>Cook: 10 min</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">640 cal</span>
-            <span class="macro-pill macro-pro">42g pro</span>
-            <span class="macro-pill macro-carb">72g carb</span>
-            <span class="macro-pill macro-fat">18g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (per serving)</div>
-          <ul>
-            <li>80g oats (blitzed to flour)</li>
-            <li>2 eggs</li>
-            <li>1 banana</li>
-            <li>1 scoop protein powder</li>
-            <li>50ml milk, 1 tsp baking powder</li>
-            <li>Honey to serve</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Blend all ingredients except honey</li>
-            <li>Non-stick pan, medium heat, spray with oil</li>
-            <li>Small circles (~10cm), 2 min per side</li>
-            <li>Stack and drizzle with honey</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- LUNCH: CHICKEN WRAP -->
-      <details class="recipe-card" id="chicken-wrap">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-lunch">lunch</span>
-              <h3>Chicken Wrap</h3>
-              <div class="recipe-meta"><span>No Cook</span><span>Prep: 5 min</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">640 cal</span>
-            <span class="macro-pill macro-pro">48g pro</span>
-            <span class="macro-pill macro-carb">56g carb</span>
-            <span class="macro-pill macro-fat">22g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (per serving)</div>
-          <ul>
-            <li>200g batch-cooked shredded chicken</li>
-            <li>2 large tortilla wraps</li>
-            <li>&frac12; pepper, sliced</li>
-            <li>2 tbsp Greek yoghurt + paprika + lemon</li>
-            <li>Lettuce or spinach</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>Mix yoghurt dressing</li>
-            <li>Warm wraps 15 sec in microwave</li>
-            <li>Layer chicken, veg, dressing, leaves</li>
-            <li>Roll tightly</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- EVENING: PROTEIN SHAKE -->
-      <details class="recipe-card" id="protein-shake">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-snack">evening</span>
-              <h3>Protein Shake (with Kefir)</h3>
-              <div class="recipe-meta"><span>Blender</span><span>2 min</span></div>
-            </div>
-            <span class="chevron">&#9662;</span>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-macros-bar">
-            <span class="macro-pill macro-cal">460 cal</span>
-            <span class="macro-pill macro-pro">42g pro</span>
-            <span class="macro-pill macro-carb">42g carb</span>
-            <span class="macro-pill macro-fat">10g fat</span>
-          </div>
-          <div class="recipe-section-title">Ingredients (per serving)</div>
-          <ul>
-            <li>1 scoop protein powder</li>
-            <li>300ml semi-skimmed milk</li>
-            <li><strong>150ml kefir</strong> (probiotic &mdash; every day)</li>
-            <li>1 banana (add Tue, Thu, Sat, Mon)</li>
-          </ul>
-          <div class="recipe-section-title">Shake Pairings</div>
-          <ul>
-            <li><strong>PB on toast</strong> (+300 cal, +12g pro) &mdash; Tue, Thu, Sat, Mon</li>
-            <li><strong>Greek yoghurt + honey</strong> (+150 cal, +15g pro) &mdash; Wed, Sun</li>
-            <li><strong>Cottage cheese on toast</strong> (+200 cal, +16g pro) &mdash; Fri</li>
-          </ul>
-        </div>
-      </details>
-
-    </div><!-- /recipe-grid -->
-  </details><!-- /recipes -->
-
-
-  <!-- ==================== NUTRITION ==================== -->
-  <details class="section-accordion" id="nutrition">
+  <!-- ==================== SHOPPING LIST ==================== -->
+  <details class="section-accordion" id="shopping-list">
     <summary class="section-anchor">
-      Nutrition
+      Shopping List
       <span class="chevron">&#9662;</span>
     </summary>
 
-    <h4 class="nutrition-subtitle">Macros vs UK Guidelines (adult males)</h4>
-    <table class="nutrition-table">
-      <tr><th>Nutrient</th><th>UK RNI</th><th>Michael</th><th>Vincent</th><th>Status</th></tr>
-      <tr><td>Calories</td><td>~2,500 avg</td><td>2,358</td><td>3,000</td><td class="status-ok">Both personalised</td></tr>
-      <tr><td>Protein</td><td>55.5g (RNI)</td><td colspan="2" style="text-align:center;">~208g (180g target)</td><td class="status-ok">Fine at 1.6&ndash;2.2g/kg</td></tr>
-      <tr><td>Fat</td><td>&lt;97g (&lt;35% cal)</td><td>~105g (40%)</td><td>~105g (32%)</td><td class="status-warn">Michael slightly high</td></tr>
-      <tr><td>Sat fat</td><td>&lt;11% cal</td><td colspan="2" style="text-align:center;">Not tracked</td><td class="status-warn">Watch cheese, mince, PB</td></tr>
-      <tr><td>Carbs</td><td>~300g (~50% cal)</td><td>~200g (reduced)</td><td>~306g</td><td class="status-ok">Both reasonable</td></tr>
-      <tr><td>Fibre</td><td>30g/day</td><td colspan="2" style="text-align:center;">~28g</td><td class="status-warn">Slightly under &mdash; extra veg helps</td></tr>
-      <tr><td>Free sugar</td><td>&lt;30g/day</td><td colspan="2" style="text-align:center;">Not tracked</td><td class="status-ok">Likely fine</td></tr>
-      <tr><td>Salt</td><td>&lt;6g/day</td><td colspan="2" style="text-align:center;">Not tracked</td><td class="status-warn">Soy-heavy wok nights &mdash; monitor</td></tr>
-    </table>
+    <!-- MEAT & FISH -->
+    <details class="shopping-category" open>
+      <summary>
+        Meat &amp; Fish
+        <span class="category-badge">7 items</span>
+        <span class="chevron">&#9662;</span>
+      </summary>
+      <table class="shopping-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>In stock?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="item-name">Salmon fillets, skinless</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Pork mince</td><td>700g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Braising beef / beef chuck</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Bone-in chicken thighs, skin-on</td><td>8 thighs (~1.2kg)</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Boneless skinless chicken thighs</td><td>2kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Turkey mince</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Beef mince (10&ndash;15% fat)</td><td>1.5kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+        </tbody>
+      </table>
+    </details>
 
-    <h4 class="nutrition-subtitle">Micros vs UK RNI</h4>
-    <table class="nutrition-table">
-      <tr><th>Nutrient</th><th>UK RNI</th><th>Covered?</th><th>Source in plan</th></tr>
-      <tr><td>Vitamin D</td><td>10mcg (400 IU)</td><td class="status-supp">Supplement</td><td>1,000 IU D3 daily + mackerel + eggs</td></tr>
-      <tr><td>Calcium</td><td>700mg</td><td class="status-ok">Yes</td><td>Milk, kefir, cheese, yoghurt daily</td></tr>
-      <tr><td>Iron</td><td>8.7mg</td><td class="status-ok">Yes</td><td>Beef, eggs, spinach</td></tr>
-      <tr><td>Zinc</td><td>9.5mg</td><td class="status-ok">Yes</td><td>Beef, pumpkin seeds, spinach</td></tr>
-      <tr><td>Magnesium</td><td>300mg</td><td class="status-supp">Supplement</td><td>Pumpkin seeds 2 days + oats + spinach. Supplement bridges gap</td></tr>
-      <tr><td>B12</td><td>1.5mcg</td><td class="status-ok">Yes</td><td>Meat and dairy daily</td></tr>
-      <tr><td>Folate</td><td>200mcg</td><td class="status-ok">Yes</td><td>Spinach, broccoli, beans</td></tr>
-      <tr><td>Vitamin C</td><td>40mg</td><td class="status-ok">Yes</td><td>Peppers, broccoli, pak choi</td></tr>
-      <tr><td>Omega-3</td><td>250&ndash;500mg EPA+DHA</td><td class="status-supp">Supplement</td><td>Mackerel Sat (~3.6g). Fish oil daily covers other days</td></tr>
-      <tr><td>Potassium</td><td>3,500mg</td><td class="status-ok">Yes</td><td>Bananas, potatoes, milk</td></tr>
-    </table>
+    <!-- DAIRY & EGGS -->
+    <details class="shopping-category">
+      <summary>
+        Dairy &amp; Eggs
+        <span class="category-badge">9 items</span>
+        <span class="chevron">&#9662;</span>
+      </summary>
+      <table class="shopping-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>In stock?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="item-name">Whole milk</td><td>4 litres</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Kefir</td><td>1.5 litres</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Eggs</td><td>30</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Greek yoghurt</td><td>1.5kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Mature cheddar</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Butter</td><td>100g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Parmesan</td><td>50g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Cottage cheese</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+        </tbody>
+      </table>
+    </details>
 
-    <h4 class="nutrition-subtitle">Daily Supplements</h4>
-    <div class="supplement-card"><strong>Vitamin D3</strong> &mdash; 1,000 IU daily, year-round. UK sunlight unreliable even in summer.</div>
-    <div class="supplement-card"><strong>Fish Oil</strong> &mdash; 1g EPA+DHA daily. Mackerel covers Saturday only; this smooths omega-3 across the week.</div>
-    <div class="supplement-card"><strong>Magnesium</strong> &mdash; 200&ndash;400mg citrate or glycinate daily. Pumpkin seeds only on 2 days; hard to hit 300mg RNI from food alone.</div>
+    <!-- PRODUCE & VEGETABLES -->
+    <details class="shopping-category">
+      <summary>
+        Produce &amp; Vegetables
+        <span class="category-badge">15 items</span>
+        <span class="chevron">&#9662;</span>
+      </summary>
+      <table class="shopping-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>In stock?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="item-name">Baby spinach</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Broccoli</td><td>4 heads</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Pak choi</td><td>3 heads</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Fine green beans</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Red peppers</td><td>4</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Red onion</td><td>2</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Brown onions</td><td>6</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Garlic</td><td>2 bulbs</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Fresh ginger</td><td>~100g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Spring onions</td><td>2 bunches</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Carrots</td><td>2</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Sweet potatoes</td><td>2 large (~600g)</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Baby potatoes</td><td>400g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Bananas</td><td>14</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Lemon</td><td>1</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+        </tbody>
+      </table>
+    </details>
 
-    <h4 class="nutrition-subtitle">Watch Points</h4>
-    <div class="nutrition-note"><strong>Michael&rsquo;s fat %</strong> &mdash; At ~105g fat on 2,358 cal = 40%. Trim cheese or PB on his portions to bring closer to 35%.</div>
-    <div class="nutrition-note"><strong>Salt on wok nights</strong> &mdash; 3 tbsp soy sauce per recipe adds ~9g sodium. Use low-sodium soy or reduce to 2 tbsp where possible.</div>
-    <div class="nutrition-note"><strong>Fibre</strong> &mdash; ~28g vs 30g target. Add an extra portion of veg or switch to higher-fibre bread.</div>
+    <!-- CUPBOARD & DRY GOODS -->
+    <details class="shopping-category">
+      <summary>
+        Cupboard &amp; Dry Goods
+        <span class="category-badge">16 items</span>
+        <span class="chevron">&#9662;</span>
+      </summary>
+      <table class="shopping-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>In stock?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="item-name">Jasmine rice</td><td>2kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Egg noodles</td><td>300g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Rolled oats</td><td>1kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Wholemeal bread</td><td>2 loaves</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Crusty bread / baguette</td><td>1 large</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Tinned chickpeas</td><td>2 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Tinned chopped tomatoes</td><td>6 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Tinned coconut milk (400ml)</td><td>1 tin</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Tinned kidney beans</td><td>2 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Tinned cannellini beans</td><td>1 tin</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Chicken stock cubes</td><td>1 pack</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Beef stock cubes</td><td>1 pack</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Breadcrumbs</td><td>50g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Pumpkin seeds</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Frozen sweetcorn</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Tinned tuna</td><td>2 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+        </tbody>
+      </table>
+    </details>
 
-  </details><!-- /nutrition -->
+    <!-- CUPBOARD STAPLES -->
+    <details class="shopping-category">
+      <summary>
+        Cupboard Staples (check stock)
+        <span class="category-badge">20 items</span>
+        <span class="chevron">&#9662;</span>
+      </summary>
+      <table class="shopping-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>In stock?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="item-name">Peanut butter</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Honey</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Mirin</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Soy sauce</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Oyster sauce</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Cornflour</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Sesame oil</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Sesame seeds</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Vegetable oil</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Olive oil</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Smoked paprika</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Curry powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Cumin</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Chilli powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Italian seasoning</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Dried thyme</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Baking powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Vegemite</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Protein powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+        </tbody>
+      </table>
+    </details>
 
-</div><!-- /content -->
+  </details>
 
+</div>
 </body>
 </html>
