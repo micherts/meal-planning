@@ -349,6 +349,70 @@
     border: 1px solid var(--border);
   }
 
+  /* Stock toggle button */
+  .stock-toggle {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: background 0.15s, color 0.15s, opacity 0.15s;
+    font-family: inherit;
+    user-select: none;
+  }
+
+  .stock-toggle[data-state="unknown"] {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .stock-toggle[data-state="yes"] {
+    background: var(--green-bg);
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+
+  .stock-toggle[data-state="low"] {
+    background: var(--orange-bg);
+    color: var(--orange);
+    border: 1px solid var(--orange);
+  }
+
+  /* Dim rows marked as fully in stock */
+  .shopping-table tr.in-stock td {
+    opacity: 0.4;
+  }
+
+  .shopping-table tr.in-stock .item-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  /* Copy order button */
+  .copy-order-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, opacity 0.15s;
+    margin-bottom: 20px;
+  }
+
+  .copy-order-btn:hover { background: var(--accent-light); color: var(--bg); }
+  .copy-order-btn:active { opacity: 0.85; }
+
   /* Responsive */
   @media (max-width: 640px) {
     .header-stats { display: none; }
@@ -1071,6 +1135,12 @@
       <span class="chevron">&#9662;</span>
     </summary>
 
+    <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center;">
+      <button id="copy-order-btn" onclick="copyOrderSummary()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 20px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;">Copy Order Summary</button>
+      <button onclick="resetStockCheck()" style="background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;font-size:0.85rem;cursor:pointer;font-family:inherit;">Reset all</button>
+      <span style="font-size:0.8rem;color:var(--text-muted);">Tap In stock? to cycle: <strong style="color:var(--text-muted)">?</strong> &rarr; <strong style="color:var(--green)">Yes</strong> &rarr; <strong style="color:var(--orange)">Low</strong></span>
+    </div>
+
     <!-- MEAT & FISH -->
     <details class="shopping-category" open>
       <summary>
@@ -1079,21 +1149,15 @@
         <span class="chevron">&#9662;</span>
       </summary>
       <table class="shopping-table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>In stock?</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Item</th><th>Qty</th><th>In stock?</th></tr></thead>
         <tbody>
-          <tr><td class="item-name">Salmon fillets, skinless</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Pork mince</td><td>700g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Braising beef / beef chuck</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Bone-in chicken thighs, skin-on</td><td>8 thighs (~1.2kg)</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Boneless skinless chicken thighs</td><td>2kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Turkey mince</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Beef mince (10&ndash;15% fat)</td><td>1.5kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Salmon fillets, skinless</td><td>800g</td><td><button class="stock-toggle" data-state="unknown" data-key="Salmon fillets, skinless" data-qty="800g" data-cat="Meat &amp; Fish" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Pork mince</td><td>700g</td><td><button class="stock-toggle" data-state="unknown" data-key="Pork mince" data-qty="700g" data-cat="Meat &amp; Fish" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Braising beef / beef chuck</td><td>800g</td><td><button class="stock-toggle" data-state="unknown" data-key="Braising beef / beef chuck" data-qty="800g" data-cat="Meat &amp; Fish" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Bone-in chicken thighs, skin-on</td><td>8 thighs (~1.2kg)</td><td><button class="stock-toggle" data-state="unknown" data-key="Bone-in chicken thighs, skin-on" data-qty="8 thighs (~1.2kg)" data-cat="Meat &amp; Fish" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Boneless skinless chicken thighs</td><td>1kg</td><td><button class="stock-toggle" data-state="unknown" data-key="Boneless skinless chicken thighs" data-qty="1kg" data-cat="Meat &amp; Fish" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Turkey mince</td><td>800g</td><td><button class="stock-toggle" data-state="unknown" data-key="Turkey mince" data-qty="800g" data-cat="Meat &amp; Fish" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Beef mince (10&ndash;15% fat)</td><td>1kg</td><td><button class="stock-toggle" data-state="unknown" data-key="Beef mince" data-qty="1kg" data-cat="Meat &amp; Fish" onclick="cycleStock(this)">?</button></td></tr>
         </tbody>
       </table>
     </details>
@@ -1102,26 +1166,20 @@
     <details class="shopping-category">
       <summary>
         Dairy &amp; Eggs
-        <span class="category-badge">9 items</span>
+        <span class="category-badge">8 items</span>
         <span class="chevron">&#9662;</span>
       </summary>
       <table class="shopping-table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>In stock?</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Item</th><th>Qty</th><th>In stock?</th></tr></thead>
         <tbody>
-          <tr><td class="item-name">Whole milk</td><td>4 litres</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Kefir</td><td>1.5 litres</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Eggs</td><td>30</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Greek yoghurt</td><td>1.5kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Mature cheddar</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Butter</td><td>100g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Parmesan</td><td>50g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Cottage cheese</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Whole milk</td><td>4 litres</td><td><button class="stock-toggle" data-state="unknown" data-key="Whole milk" data-qty="4 litres" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Kefir</td><td>1.5 litres</td><td><button class="stock-toggle" data-state="unknown" data-key="Kefir" data-qty="1.5 litres" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Eggs</td><td>30</td><td><button class="stock-toggle" data-state="unknown" data-key="Eggs" data-qty="30" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Greek yoghurt</td><td>1.5kg</td><td><button class="stock-toggle" data-state="unknown" data-key="Greek yoghurt" data-qty="1.5kg" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Mature cheddar</td><td>200g</td><td><button class="stock-toggle" data-state="unknown" data-key="Mature cheddar" data-qty="200g" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Butter</td><td>100g</td><td><button class="stock-toggle" data-state="unknown" data-key="Butter" data-qty="100g" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Parmesan</td><td>50g</td><td><button class="stock-toggle" data-state="unknown" data-key="Parmesan" data-qty="50g" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Cottage cheese</td><td>200g</td><td><button class="stock-toggle" data-state="unknown" data-key="Cottage cheese" data-qty="200g" data-cat="Dairy &amp; Eggs" onclick="cycleStock(this)">?</button></td></tr>
         </tbody>
       </table>
     </details>
@@ -1134,29 +1192,23 @@
         <span class="chevron">&#9662;</span>
       </summary>
       <table class="shopping-table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>In stock?</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Item</th><th>Qty</th><th>In stock?</th></tr></thead>
         <tbody>
-          <tr><td class="item-name">Baby spinach</td><td>800g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Broccoli</td><td>4 heads</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Pak choi</td><td>3 heads</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Fine green beans</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Red peppers</td><td>4</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Red onion</td><td>2</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Brown onions</td><td>6</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Garlic</td><td>2 bulbs</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Fresh ginger</td><td>~100g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Spring onions</td><td>2 bunches</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Carrots</td><td>2</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Sweet potatoes</td><td>2 large (~600g)</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Baby potatoes</td><td>400g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Bananas</td><td>14</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Lemon</td><td>1</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Baby spinach</td><td>800g</td><td><button class="stock-toggle" data-state="unknown" data-key="Baby spinach" data-qty="800g" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Broccoli</td><td>4 heads</td><td><button class="stock-toggle" data-state="unknown" data-key="Broccoli" data-qty="4 heads" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Pak choi</td><td>3 heads</td><td><button class="stock-toggle" data-state="unknown" data-key="Pak choi" data-qty="3 heads" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Fine green beans</td><td>200g</td><td><button class="stock-toggle" data-state="unknown" data-key="Fine green beans" data-qty="200g" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Red peppers</td><td>4</td><td><button class="stock-toggle" data-state="unknown" data-key="Red peppers" data-qty="4" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Red onion</td><td>2</td><td><button class="stock-toggle" data-state="unknown" data-key="Red onion" data-qty="2" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Brown onions</td><td>6</td><td><button class="stock-toggle" data-state="unknown" data-key="Brown onions" data-qty="6" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Garlic</td><td>2 bulbs</td><td><button class="stock-toggle" data-state="unknown" data-key="Garlic" data-qty="2 bulbs" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Fresh ginger</td><td>~100g</td><td><button class="stock-toggle" data-state="unknown" data-key="Fresh ginger" data-qty="~100g" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Spring onions</td><td>2 bunches</td><td><button class="stock-toggle" data-state="unknown" data-key="Spring onions" data-qty="2 bunches" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Carrots</td><td>2</td><td><button class="stock-toggle" data-state="unknown" data-key="Carrots" data-qty="2" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Sweet potatoes</td><td>2 large (~600g)</td><td><button class="stock-toggle" data-state="unknown" data-key="Sweet potatoes" data-qty="2 large (~600g)" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Baby potatoes</td><td>400g</td><td><button class="stock-toggle" data-state="unknown" data-key="Baby potatoes" data-qty="400g" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Bananas</td><td>14</td><td><button class="stock-toggle" data-state="unknown" data-key="Bananas" data-qty="14" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Lemon</td><td>1</td><td><button class="stock-toggle" data-state="unknown" data-key="Lemon" data-qty="1" data-cat="Produce" onclick="cycleStock(this)">?</button></td></tr>
         </tbody>
       </table>
     </details>
@@ -1169,30 +1221,24 @@
         <span class="chevron">&#9662;</span>
       </summary>
       <table class="shopping-table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>In stock?</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Item</th><th>Qty</th><th>In stock?</th></tr></thead>
         <tbody>
-          <tr><td class="item-name">Jasmine rice</td><td>2kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Egg noodles</td><td>300g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Rolled oats</td><td>1kg</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Wholemeal bread</td><td>2 loaves</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Crusty bread / baguette</td><td>1 large</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Tinned chickpeas</td><td>2 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Tinned chopped tomatoes</td><td>6 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Tinned coconut milk (400ml)</td><td>1 tin</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Tinned kidney beans</td><td>2 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Tinned cannellini beans</td><td>1 tin</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Chicken stock cubes</td><td>1 pack</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Beef stock cubes</td><td>1 pack</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Breadcrumbs</td><td>50g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Pumpkin seeds</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Frozen sweetcorn</td><td>200g</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Tinned tuna</td><td>2 tins</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Jasmine rice</td><td>2kg</td><td><button class="stock-toggle" data-state="unknown" data-key="Jasmine rice" data-qty="2kg" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Egg noodles</td><td>300g</td><td><button class="stock-toggle" data-state="unknown" data-key="Egg noodles" data-qty="300g" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Rolled oats</td><td>1kg</td><td><button class="stock-toggle" data-state="unknown" data-key="Rolled oats" data-qty="1kg" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Wholemeal bread</td><td>2 loaves</td><td><button class="stock-toggle" data-state="unknown" data-key="Wholemeal bread" data-qty="2 loaves" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Crusty bread / baguette</td><td>1 large</td><td><button class="stock-toggle" data-state="unknown" data-key="Crusty bread / baguette" data-qty="1 large" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Tinned chickpeas</td><td>2 tins</td><td><button class="stock-toggle" data-state="unknown" data-key="Tinned chickpeas" data-qty="2 tins" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Tinned chopped tomatoes</td><td>6 tins</td><td><button class="stock-toggle" data-state="unknown" data-key="Tinned chopped tomatoes" data-qty="6 tins" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Tinned coconut milk (400ml)</td><td>1 tin</td><td><button class="stock-toggle" data-state="unknown" data-key="Tinned coconut milk" data-qty="1 tin" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Tinned kidney beans</td><td>2 tins</td><td><button class="stock-toggle" data-state="unknown" data-key="Tinned kidney beans" data-qty="2 tins" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Tinned cannellini beans</td><td>1 tin</td><td><button class="stock-toggle" data-state="unknown" data-key="Tinned cannellini beans" data-qty="1 tin" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Chicken stock cubes</td><td>1 pack</td><td><button class="stock-toggle" data-state="unknown" data-key="Chicken stock cubes" data-qty="1 pack" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Beef stock cubes</td><td>1 pack</td><td><button class="stock-toggle" data-state="unknown" data-key="Beef stock cubes" data-qty="1 pack" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Breadcrumbs</td><td>50g</td><td><button class="stock-toggle" data-state="unknown" data-key="Breadcrumbs" data-qty="50g" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Pumpkin seeds</td><td>200g</td><td><button class="stock-toggle" data-state="unknown" data-key="Pumpkin seeds" data-qty="200g" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Frozen sweetcorn</td><td>200g</td><td><button class="stock-toggle" data-state="unknown" data-key="Frozen sweetcorn" data-qty="200g" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Tinned tuna</td><td>2 tins</td><td><button class="stock-toggle" data-state="unknown" data-key="Tinned tuna" data-qty="2 tins" data-cat="Cupboard" onclick="cycleStock(this)">?</button></td></tr>
         </tbody>
       </table>
     </details>
@@ -1201,37 +1247,31 @@
     <details class="shopping-category">
       <summary>
         Cupboard Staples (check stock)
-        <span class="category-badge">20 items</span>
+        <span class="category-badge">19 items</span>
         <span class="chevron">&#9662;</span>
       </summary>
       <table class="shopping-table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>In stock?</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Item</th><th>Qty</th><th>In stock?</th></tr></thead>
         <tbody>
-          <tr><td class="item-name">Peanut butter</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Honey</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Mirin</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Soy sauce</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Oyster sauce</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Cornflour</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Sesame oil</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Sesame seeds</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Vegetable oil</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Olive oil</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Smoked paprika</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Curry powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Cumin</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Chilli powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Italian seasoning</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Dried thyme</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Baking powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Vegemite</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
-          <tr><td class="item-name">Protein powder</td><td>&mdash;</td><td><span class="stock-badge">&nbsp;</span></td></tr>
+          <tr><td class="item-name">Peanut butter</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Peanut butter" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Honey</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Honey" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Mirin</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Mirin" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Soy sauce</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Soy sauce" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Oyster sauce</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Oyster sauce" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Cornflour</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Cornflour" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Sesame oil</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Sesame oil" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Sesame seeds</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Sesame seeds" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Vegetable oil</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Vegetable oil" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Olive oil</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Olive oil" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Smoked paprika</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Smoked paprika" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Curry powder</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Curry powder" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Cumin</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Cumin" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Chilli powder</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Chilli powder" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Italian seasoning</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Italian seasoning" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Dried thyme</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Dried thyme" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Baking powder</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Baking powder" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Vegemite</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Vegemite" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
+          <tr><td class="item-name">Protein powder</td><td>&mdash;</td><td><button class="stock-toggle" data-state="unknown" data-key="Protein powder" data-qty="check" data-cat="Staples" onclick="cycleStock(this)">?</button></td></tr>
         </tbody>
       </table>
     </details>
@@ -1239,5 +1279,96 @@
   </details>
 
 </div>
+
+<script>
+  const STORAGE_KEY = 'stock-w4-2026';
+
+  function loadStockState() {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    document.querySelectorAll('.stock-toggle').forEach(btn => {
+      const key = btn.dataset.key;
+      if (saved[key]) {
+        btn.dataset.state = saved[key];
+        updateToggleAppearance(btn);
+      }
+    });
+  }
+
+  function saveStockState() {
+    const state = {};
+    document.querySelectorAll('.stock-toggle').forEach(btn => {
+      state[btn.dataset.key] = btn.dataset.state;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function updateToggleAppearance(btn) {
+    const state = btn.dataset.state;
+    const row = btn.closest('tr');
+    if (state === 'yes') {
+      btn.textContent = 'Yes';
+      row.classList.add('in-stock');
+    } else if (state === 'low') {
+      btn.textContent = 'Low';
+      row.classList.remove('in-stock');
+    } else {
+      btn.textContent = '?';
+      row.classList.remove('in-stock');
+    }
+  }
+
+  function cycleStock(btn) {
+    const states = ['unknown', 'yes', 'low'];
+    const current = btn.dataset.state;
+    const next = states[(states.indexOf(current) + 1) % states.length];
+    btn.dataset.state = next;
+    updateToggleAppearance(btn);
+    saveStockState();
+  }
+
+  function resetStockCheck() {
+    if (!confirm('Reset all stock selections?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll('.stock-toggle').forEach(btn => {
+      btn.dataset.state = 'unknown';
+      updateToggleAppearance(btn);
+    });
+  }
+
+  function copyOrderSummary() {
+    const categories = {};
+    document.querySelectorAll('.stock-toggle').forEach(btn => {
+      const state = btn.dataset.state;
+      if (state === 'yes') return;
+      const cat = btn.dataset.cat;
+      const key = btn.dataset.key;
+      const qty = btn.dataset.qty;
+      const suffix = state === 'low' ? ' [LOW — check qty]' : '';
+      if (!categories[cat]) categories[cat] = [];
+      categories[cat].push(`- ${key} — ${qty}${suffix}`);
+    });
+
+    let text = 'SHOPPING ORDER — Week 4 (27 Mar – 2 Apr)\n\n';
+    for (const [cat, items] of Object.entries(categories)) {
+      text += cat.toUpperCase() + '\n';
+      text += items.join('\n') + '\n\n';
+    }
+    text = text.trim();
+
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-order-btn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.style.background = 'var(--green)';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = 'var(--accent)';
+      }, 2000);
+    });
+  }
+
+  loadStockState();
+</script>
+
 </body>
 </html>
