@@ -316,7 +316,17 @@
   }
 
   .shopping-table tr:last-child td { border-bottom: none; }
-  .shopping-table .item-name { color: var(--text); }
+  .shopping-table .item-name {
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+  .shopping-table .item-name:hover { color: var(--accent-light); }
+  .shopping-table .item-name.flash-copied {
+    color: var(--green);
+    transition: color 0.1s;
+  }
 
   .stock-toggle {
     display: inline-block;
@@ -1355,6 +1365,21 @@
     updateProgress();
   }
 
+  function copyItemToClipboard(td) {
+    const itemName = td.textContent.trim();
+    const row = td.closest('tr');
+    const qtyCell = row.cells[1];
+    const orderInput = row.querySelector('.order-qty-input');
+    const qty = (orderInput && orderInput.value.trim()) ? orderInput.value.trim() : (qtyCell ? qtyCell.textContent.trim() : '');
+    const text = qty ? itemName + ' — ' + qty : itemName;
+    navigator.clipboard.writeText(text).then(() => {
+      td.classList.add('flash-copied');
+      const original = td.textContent;
+      td.textContent = 'Copied!';
+      setTimeout(() => { td.textContent = original; td.classList.remove('flash-copied'); }, 1200);
+    });
+  }
+
   function copyOrderSummary() {
     const lines = ['TESCO ORDER \u2014 Week 5 (4\u201310 Apr 2026)', ''];
     let currentCat = '';
@@ -1397,6 +1422,10 @@
 
   loadStockState();
   updateProgress();
+
+  document.querySelectorAll('.shopping-table .item-name').forEach(td => {
+    td.addEventListener('click', () => copyItemToClipboard(td));
+  });
 </script>
 </body>
 </html>
