@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weekly Meal Plan &mdash; Week 6</title>
+<title>Weekly Meal Plan &mdash; Week 7</title>
 <style>
   html { scroll-behavior: smooth; }
 
@@ -78,124 +78,125 @@
   .section-accordion { margin-bottom: 24px; }
 
   .section-accordion > summary {
-    list-style: none;
-    cursor: pointer;
-    user-select: none;
-    font-size: 1.2rem;
-    font-weight: 700;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .section-accordion > summary::-webkit-details-marker { display: none; }
-  .section-accordion > summary::marker { display: none; }
-
-  .batch-cook-banner {
-    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-bottom: 24px;
-  }
-
-  .batch-cook-banner h3 { font-size: 1rem; margin-bottom: 4px; }
-  .batch-cook-banner p { font-size: 0.85rem; opacity: 0.9; }
-
-  .batch-cook-card {
-    background: var(--green-bg);
-    border: 1px solid var(--green);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .batch-cook-card .batch-label { display: block; font-weight: 600; font-size: 0.85rem; color: var(--green); margin-bottom: 2px; }
-  .batch-cook-card .batch-detail { font-size: 0.8rem; color: var(--text-muted); }
-
-  details > summary { list-style: none; cursor: pointer; user-select: none; }
-  details > summary::-webkit-details-marker { display: none; }
-  details > summary::marker { display: none; }
-
-  .chevron {
-    display: inline-block;
-    transition: transform 0.2s;
-    color: var(--text-muted);
-    font-style: normal;
-    font-size: 1.1rem;
-    line-height: 1;
-  }
-
-  details[open] > summary .chevron { transform: rotate(180deg); }
-
-  .day-card {
+    padding: 14px 20px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
     margin-bottom: 16px;
+    transition: background 0.15s;
+  }
+
+  .section-accordion > summary:hover { background: var(--surface-2); }
+  .section-accordion[open] > summary { border-radius: var(--radius) var(--radius) 0 0; margin-bottom: 0; border-bottom: none; }
+
+  .chevron { font-style: normal; font-size: 1.2rem; color: var(--text-muted); transition: transform 0.2s; }
+  details[open] > summary .chevron { transform: rotate(180deg); }
+
+  /* Batch cook banner */
+  .batch-cook-banner {
+    background: var(--green-bg);
+    border: 1px solid var(--green);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 14px 20px 10px;
+    margin-bottom: 0;
+  }
+
+  .batch-cook-banner h3 { color: var(--green); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .batch-cook-banner p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+  .batch-cook-card {
+    background: var(--surface);
+    border: 1px solid var(--green);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    font-size: 0.875rem;
+  }
+
+  .batch-label {
+    display: inline-block;
+    font-weight: 700;
+    color: var(--green);
+    margin-right: 10px;
+  }
+
+  .batch-detail { color: var(--text-muted); }
+
+  /* Day cards */
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
     overflow: hidden;
   }
+
+  .day-card:first-of-type { border-top: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; }
+  .day-card:last-of-type { border-radius: 0 0 var(--radius) var(--radius); margin-bottom: 0; }
 
   .day-card > summary {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
+    padding: 14px 20px;
+    cursor: pointer;
+    list-style: none;
     transition: background 0.15s;
   }
 
   .day-card > summary:hover { background: var(--surface-2); }
 
-  .day-name { font-size: 1.1rem; font-weight: 600; }
-  .day-macros { display: flex; gap: 12px; font-size: 0.8rem; }
-
-  .macro-pill { padding: 3px 10px; border-radius: 20px; font-weight: 600; }
-  .macro-cal  { background: var(--orange-bg); color: var(--orange); }
-  .macro-pro  { background: var(--green-bg);  color: var(--green);  }
-  .macro-carb { background: var(--blue-bg);   color: var(--blue);   }
-  .macro-fat  { background: var(--red-bg);    color: var(--red);    }
+  .day-name { font-weight: 700; font-size: 1rem; }
 
   .day-summary-right { display: flex; align-items: center; gap: 16px; }
+
+  .day-macros { display: flex; gap: 8px; }
+
+  .macro-pill {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .macro-cal { background: var(--orange-bg); color: var(--orange); }
+  .macro-pro { background: var(--blue-bg); color: var(--blue); }
+
   .day-meals { padding: 0 20px 16px; }
+
+  .day-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 8px 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
 
   .meal-row {
     display: grid;
     grid-template-columns: 100px 1fr auto;
     gap: 12px;
-    padding: 12px 0;
-    border-top: 1px solid var(--border);
-    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+    font-size: 0.875rem;
   }
 
-  .meal-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--accent-light);
-  }
+  .meal-row:last-child { border: none; }
 
-  .meal-name { font-size: 0.9rem; }
-  .meal-link { color: inherit; text-decoration: none; }
-  .meal-link:hover { color: var(--accent-light); text-decoration: underline; }
+  .meal-label { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px; }
+  .meal-name { color: var(--text); }
+  .meal-macros { display: flex; gap: 12px; font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
 
-  .meal-macros { display: flex; gap: 8px; font-size: 0.75rem; color: var(--text-muted); }
-
-  .day-note {
-    margin-top: 8px;
-    padding: 10px 14px;
-    background: var(--surface-2);
-    border-radius: var(--radius-sm);
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    border-left: 3px solid var(--accent);
-  }
+  .meal-link { color: var(--accent-light); text-decoration: none; }
+  .meal-link:hover { text-decoration: underline; }
 
   .batch-day-badge {
     display: inline-block;
@@ -298,73 +299,49 @@
   }
 
   .shopping-table th {
+    padding: 8px 16px;
     text-align: left;
-    padding: 8px 20px;
-    color: var(--accent-light);
-    font-weight: 600;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 2px solid var(--border);
-    background: var(--surface-2);
-  }
-
-  .shopping-table td {
-    padding: 9px 20px;
     color: var(--text-muted);
+    background: var(--surface-2);
     border-bottom: 1px solid var(--border);
   }
 
+  .shopping-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
   .shopping-table tr:last-child td { border-bottom: none; }
-  .shopping-table .item-name {
-    color: var(--text);
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-  }
-  .shopping-table .item-name:hover { color: var(--accent-light); }
-  .shopping-table .item-name.flash-copied {
-    color: var(--green);
-    transition: color 0.1s;
-  }
+
+  .shopping-table tr.in-stock { opacity: 0.4; }
+  .shopping-table tr.in-stock .item-name { text-decoration: line-through; }
+
+  .item-name { font-weight: 500; cursor: pointer; }
+  .item-name:hover { color: var(--accent-light); }
+
+  .flash-copied { color: var(--green) !important; }
 
   .stock-toggle {
-    display: inline-block;
-    padding: 3px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    outline: none;
-    transition: background 0.15s, color 0.15s;
-    font-family: inherit;
-    user-select: none;
-  }
-
-  .stock-toggle[data-state="unknown"] {
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
     background: var(--surface-2);
     color: var(--text-muted);
-    border: 1px solid var(--border);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
   }
 
-  .stock-toggle[data-state="yes"] {
-    background: var(--green-bg);
-    color: var(--green);
-    border: 1px solid var(--green);
-  }
-
-  .stock-toggle[data-state="low"] {
-    background: var(--orange-bg);
-    color: var(--orange);
-    border: 1px solid var(--orange);
-  }
-
-  .shopping-table tr.in-stock td { opacity: 0.4; }
-  .shopping-table tr.in-stock .item-name {
-    text-decoration: line-through;
-    color: var(--text-muted);
-  }
+  .stock-toggle[data-state="yes"] { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+  .stock-toggle[data-state="low"] { background: var(--orange-bg); color: var(--orange); border-color: var(--orange); }
 
   .copy-order-btn {
     display: inline-flex;
@@ -457,13 +434,13 @@
 <div class="header">
   <div class="header-top">
     <div>
-      <h1>Week 6 &mdash; 12&ndash;18 Apr 2026</h1>
-      <div class="header-timestamp">Generated 2026-04-10</div>
+      <h1>Week 7 &mdash; 24 Apr &ndash; 30 Apr 2026</h1>
+      <div class="header-timestamp">Generated 2026-04-23</div>
     </div>
     <div class="header-stats">
       <div class="stat"><strong>Protein</strong>~200g/day</div>
-      <div class="stat"><strong>Batch 1</strong>Tue 14 Apr</div>
-      <div class="stat"><strong>New</strong>Korean Beef + Prawns</div>
+      <div class="stat"><strong>Batch</strong>Tue 28 Apr</div>
+      <div class="stat"><strong>New</strong>Courgette Stir Fry + Mushroom Chicken</div>
     </div>
   </div>
 </div>
@@ -473,12 +450,12 @@
   <!-- BATCH COOK SESSIONS -->
   <div class="batch-cook-banner">
     <h3>Batch Cook Sessions</h3>
-    <p>Cook once — use across multiple meals</p>
+    <p>Cook once &mdash; use across multiple meals</p>
   </div>
   <div class="batch-cook-card">
     <div>
-      <span class="batch-label">Session 1 &mdash; Tue 14 Apr</span>
-      <span class="batch-detail">Batch Chicken Thighs (IP, 2kg frozen) &rarr; Teriyaki Chicken Noodles (Tue dinner) + IP Chicken Curry (Wed dinner). Move from freezer to fridge Mon night to defrost overnight.</span>
+      <span class="batch-label">Session 1 &mdash; Tue 28 Apr</span>
+      <span class="batch-detail">Batch Chicken Thighs (IP, 2kg frozen) &rarr; Teriyaki Chicken Noodles (Tue dinner) + IP Mushroom Chicken &amp; Green Beans (Wed dinner). Move from freezer to fridge Mon night to defrost overnight.</span>
     </div>
   </div>
 
@@ -486,16 +463,16 @@
   <details class="section-accordion" open>
     <summary>Meal Plan <i class="chevron">&#8964;</i></summary>
 
-    <!-- Sunday -->
+    <!-- Friday -->
     <details class="day-card">
       <summary>
         <div>
-          <span class="day-name">Sunday 12 Apr</span>
+          <span class="day-name">Friday 24 Apr</span>
         </div>
         <div class="day-summary-right">
           <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,090 cal</span>
-            <span class="macro-pill macro-pro">~211g protein</span>
+            <span class="macro-pill macro-cal">~3,150 cal</span>
+            <span class="macro-pill macro-pro">~209g protein</span>
           </div>
           <i class="chevron">&#8964;</i>
         </div>
@@ -519,33 +496,33 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#recipe-salmon-curry">IP Salmon &amp; Chickpea Coconut Curry with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Mon lunch)</em></span>
+          <span class="meal-name"><a class="meal-link" href="#recipe-salmon-curry">IP Salmon &amp; Chickpea Coconut Curry with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Sat lunch)</em></span>
           <span class="meal-macros"><span>820 cal</span><span>48g P</span></span>
         </div>
         <div class="meal-row">
           <span class="meal-label">Evening</span>
           <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + Greek yoghurt with honey</span>
-          <span class="meal-macros"><span>610 cal</span><span>55g P</span></span>
+          <span class="meal-macros"><span>670 cal</span><span>53g P</span></span>
         </div>
       </div>
     </details>
 
-    <!-- Monday -->
+    <!-- Saturday -->
     <details class="day-card">
       <summary>
         <div>
-          <span class="day-name">Monday 13 Apr</span>
+          <span class="day-name">Saturday 25 Apr</span>
         </div>
         <div class="day-summary-right">
           <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,330 cal</span>
-            <span class="macro-pill macro-pro">~198g protein</span>
+            <span class="macro-pill macro-cal">~3,370 cal</span>
+            <span class="macro-pill macro-pro">~193g protein</span>
           </div>
           <i class="chevron">&#8964;</i>
         </div>
       </summary>
       <div class="day-meals">
-        <div class="day-note">Michael: reduce rice by 25%. Pumpkin seeds in oats. Rice prep (IP) for dinner. REMINDER: move frozen chicken thighs from freezer to fridge tonight to defrost for Tuesday. Supplements: D3, Fish Oil, Magnesium.</div>
+        <div class="day-note">Michael: reduce rice by 25%. Pumpkin seeds in oats. Rice prep (IP) before dinner. Supplements: D3, Fish Oil, Magnesium.</div>
         <div class="meal-row">
           <span class="meal-label">Morning</span>
           <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
@@ -563,33 +540,33 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#recipe-beef-stew">IP Beef &amp; Sweet Potato Stew with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Tue lunch)</em></span>
-          <span class="meal-macros"><span>880 cal</span><span>55g P</span></span>
+          <span class="meal-name"><a class="meal-link" href="#recipe-beef-chilli">IP Beef Chilli with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Sun lunch)</em></span>
+          <span class="meal-macros"><span>860 cal</span><span>52g P</span></span>
         </div>
         <div class="meal-row">
           <span class="meal-label">Evening</span>
-          <span class="meal-name">Protein shake (milk, kefir 150ml) + peanut butter on toast</span>
-          <span class="meal-macros"><span>730 cal</span><span>53g P</span></span>
+          <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + peanut butter on toast</span>
+          <span class="meal-macros"><span>790 cal</span><span>51g P</span></span>
         </div>
       </div>
     </details>
 
-    <!-- Tuesday -->
+    <!-- Sunday -->
     <details class="day-card">
       <summary>
         <div>
-          <span class="day-name">Tuesday 14 Apr <span class="batch-day-badge">Batch Cook</span></span>
+          <span class="day-name">Sunday 26 Apr</span>
         </div>
         <div class="day-summary-right">
           <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,150 cal</span>
-            <span class="macro-pill macro-pro">~220g protein</span>
+            <span class="macro-pill macro-cal">~3,230 cal</span>
+            <span class="macro-pill macro-pro">~207g protein</span>
           </div>
           <i class="chevron">&#8964;</i>
         </div>
       </summary>
       <div class="day-meals">
-        <div class="day-note">Batch cook: Chicken Thighs (IP) &mdash; thighs defrosted from fridge overnight. Covers tonight's teriyaki and tomorrow's curry. No rice prep tonight (noodles). Supplements: D3, Magnesium.</div>
+        <div class="day-note">Mexican Chipotle Rice Bowl. Pork takes 50 min HP + 15 min NR &mdash; start early. Rice prep (IP) before dinner. Supplements: D3, Magnesium.</div>
         <div class="meal-row">
           <span class="meal-label">Morning</span>
           <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
@@ -602,8 +579,96 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Lunch</span>
-          <span class="meal-name">Leftover beef &amp; sweet potato stew with rice</span>
-          <span class="meal-macros"><span>880 cal</span><span>55g P</span></span>
+          <span class="meal-name">Leftover beef chilli with rice</span>
+          <span class="meal-macros"><span>860 cal</span><span>52g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#recipe-mexican-pork">Mexican Chipotle Rice Bowl (pulled pork) with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Mon lunch)</em></span>
+          <span class="meal-macros"><span>800 cal</span><span>44g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + Greek yoghurt with honey</span>
+          <span class="meal-macros"><span>670 cal</span><span>53g P</span></span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Monday -->
+    <details class="day-card">
+      <summary>
+        <div>
+          <span class="day-name">Monday 27 Apr</span>
+        </div>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">~3,210 cal</span>
+            <span class="macro-pill macro-pro">~187g protein</span>
+          </div>
+          <i class="chevron">&#8964;</i>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="day-note">NEW: Wok Chicken &amp; Courgette Stir Fry. Rice prep (IP) before dinner. REMINDER: move frozen chicken thighs from freezer to fridge tonight for Tuesday batch cook. Michael: reduce rice by 25%. Pumpkin seeds in oats. Supplements: D3, Magnesium.</div>
+        <div class="meal-row">
+          <span class="meal-label">Morning</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <span class="meal-macros"><span>180 cal</span><span>6g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name">Overnight protein oats with banana, peanut butter &amp; pumpkin seeds</span>
+          <span class="meal-macros"><span>720 cal</span><span>36g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name">Leftover Mexican chipotle rice bowl</span>
+          <span class="meal-macros"><span>800 cal</span><span>44g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Dinner</span>
+          <span class="meal-name"><a class="meal-link" href="#recipe-courgette-stir-fry">Wok Chicken &amp; Courgette Stir Fry with rice</a> <span class="batch-day-badge">NEW</span> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Tue lunch)</em></span>
+          <span class="meal-macros"><span>720 cal</span><span>50g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Evening</span>
+          <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + peanut butter on toast</span>
+          <span class="meal-macros"><span>790 cal</span><span>51g P</span></span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Tuesday -->
+    <details class="day-card">
+      <summary>
+        <div>
+          <span class="day-name">Tuesday 28 Apr <span class="batch-day-badge">Batch Cook</span></span>
+        </div>
+        <div class="day-summary-right">
+          <div class="day-macros">
+            <span class="macro-pill macro-cal">~3,050 cal</span>
+            <span class="macro-pill macro-pro">~213g protein</span>
+          </div>
+          <i class="chevron">&#8964;</i>
+        </div>
+      </summary>
+      <div class="day-meals">
+        <div class="day-note">Batch cook: Chicken Thighs (IP, 2kg) &mdash; thighs must be fully defrosted from fridge overnight. Covers Teriyaki Noodles (tonight) + Mushroom Chicken Wed. Supplements: D3, Fish Oil, Magnesium.</div>
+        <div class="meal-row">
+          <span class="meal-label">Morning</span>
+          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
+          <span class="meal-macros"><span>180 cal</span><span>6g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Breakfast</span>
+          <span class="meal-name">Scrambled eggs on toast with cheese &amp; spinach</span>
+          <span class="meal-macros"><span>720 cal</span><span>52g P</span></span>
+        </div>
+        <div class="meal-row">
+          <span class="meal-label">Lunch</span>
+          <span class="meal-name">Leftover wok chicken &amp; courgette stir fry</span>
+          <span class="meal-macros"><span>720 cal</span><span>50g P</span></span>
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
@@ -613,7 +678,7 @@
         <div class="meal-row">
           <span class="meal-label">Evening</span>
           <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + Greek yoghurt with honey</span>
-          <span class="meal-macros"><span>610 cal</span><span>55g P</span></span>
+          <span class="meal-macros"><span>670 cal</span><span>53g P</span></span>
         </div>
       </div>
     </details>
@@ -622,18 +687,18 @@
     <details class="day-card">
       <summary>
         <div>
-          <span class="day-name">Wednesday 15 Apr</span>
+          <span class="day-name">Wednesday 29 Apr</span>
         </div>
         <div class="day-summary-right">
           <div class="day-macros">
             <span class="macro-pill macro-cal">~3,210 cal</span>
-            <span class="macro-pill macro-pro">~201g protein</span>
+            <span class="macro-pill macro-pro">~199g protein</span>
           </div>
           <i class="chevron">&#8964;</i>
         </div>
       </summary>
       <div class="day-meals">
-        <div class="day-note">Uses refrigerated batch chicken from Tuesday. Rice prep (IP) before dinner. Michael: reduce rice by 25%. Pumpkin seeds in oats. Supplements: D3, Magnesium.</div>
+        <div class="day-note">NEW: IP Mushroom Chicken &amp; Green Beans. Uses refrigerated batch chicken from Tuesday. Rice prep (IP) before dinner. Michael: reduce rice by 25%. Pumpkin seeds in oats. Supplements: D3, Magnesium.</div>
         <div class="meal-row">
           <span class="meal-label">Morning</span>
           <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
@@ -651,13 +716,13 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#recipe-chicken-curry">IP Chicken Curry with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Thu lunch)</em></span>
-          <span class="meal-macros"><span>820 cal</span><span>54g P</span></span>
+          <span class="meal-name"><a class="meal-link" href="#recipe-mushroom-chicken">IP Mushroom Chicken &amp; Green Beans with rice</a> <span class="batch-day-badge">NEW</span> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Thu lunch)</em></span>
+          <span class="meal-macros"><span>760 cal</span><span>54g P</span></span>
         </div>
         <div class="meal-row">
           <span class="meal-label">Evening</span>
-          <span class="meal-name">Protein shake (milk, kefir 150ml) + peanut butter on toast</span>
-          <span class="meal-macros"><span>730 cal</span><span>53g P</span></span>
+          <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + peanut butter on toast</span>
+          <span class="meal-macros"><span>790 cal</span><span>51g P</span></span>
         </div>
       </div>
     </details>
@@ -666,62 +731,18 @@
     <details class="day-card">
       <summary>
         <div>
-          <span class="day-name">Thursday 16 Apr</span>
-        </div>
-        <div class="day-summary-right">
-          <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,030 cal</span>
-            <span class="macro-pill macro-pro">~207g protein</span>
-          </div>
-          <i class="chevron">&#8964;</i>
-        </div>
-      </summary>
-      <div class="day-meals">
-        <div class="day-note">New recipe: IP Korean Beef. Rice prep (IP) ~2 hours before dinner. Vincent: add extra rice if short on calories. Supplements: D3, Fish Oil, Magnesium.</div>
-        <div class="meal-row">
-          <span class="meal-label">Morning</span>
-          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
-          <span class="meal-macros"><span>180 cal</span><span>6g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Breakfast</span>
-          <span class="meal-name">Protein pancakes (oats, eggs, banana, protein powder) with honey</span>
-          <span class="meal-macros"><span>640 cal</span><span>42g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Lunch</span>
-          <span class="meal-name">Leftover chicken curry with rice</span>
-          <span class="meal-macros"><span>820 cal</span><span>54g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#recipe-korean-beef">IP Korean Beef with rice &amp; pak choi</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Fri lunch)</em></span>
-          <span class="meal-macros"><span>780 cal</span><span>50g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Evening</span>
-          <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + Greek yoghurt with honey</span>
-          <span class="meal-macros"><span>610 cal</span><span>55g P</span></span>
-        </div>
-      </div>
-    </details>
-
-    <!-- Friday -->
-    <details class="day-card">
-      <summary>
-        <div>
-          <span class="day-name">Friday 17 Apr</span>
+          <span class="day-name">Thursday 30 Apr</span>
         </div>
         <div class="day-summary-right">
           <div class="day-macros">
             <span class="macro-pill macro-cal">~3,090 cal</span>
-            <span class="macro-pill macro-pro">~205g protein</span>
+            <span class="macro-pill macro-pro">~217g protein</span>
           </div>
           <i class="chevron">&#8964;</i>
         </div>
       </summary>
       <div class="day-meals">
-        <div class="day-note">New recipe: Wok Garlic &amp; Ginger Prawn Stir Fry. Rice prep (IP) ~2 hours before dinner. Prawns can defrost in cold water 30 min. Vincent: add extra rice. Supplements: D3, Magnesium.</div>
+        <div class="day-note">Tinned mackerel &mdash; no freshness concern. Rice prep (IP) before dinner. Supplements: D3, Fish Oil.</div>
         <div class="meal-row">
           <span class="meal-label">Morning</span>
           <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
@@ -734,62 +755,18 @@
         </div>
         <div class="meal-row">
           <span class="meal-label">Lunch</span>
-          <span class="meal-name">Leftover Korean beef with rice</span>
-          <span class="meal-macros"><span>780 cal</span><span>50g P</span></span>
+          <span class="meal-name">Leftover mushroom chicken &amp; green beans with rice</span>
+          <span class="meal-macros"><span>760 cal</span><span>54g P</span></span>
         </div>
         <div class="meal-row">
           <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#recipe-prawn-stir-fry">Wok Garlic &amp; Ginger Prawn Stir Fry with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Sat lunch)</em></span>
-          <span class="meal-macros"><span>680 cal</span><span>44g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Evening</span>
-          <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + peanut butter on toast</span>
-          <span class="meal-macros"><span>730 cal</span><span>53g P</span></span>
-        </div>
-      </div>
-    </details>
-
-    <!-- Saturday -->
-    <details class="day-card">
-      <summary>
-        <div>
-          <span class="day-name">Saturday 18 Apr</span>
-        </div>
-        <div class="day-summary-right">
-          <div class="day-macros">
-            <span class="macro-pill macro-cal">~3,090 cal</span>
-            <span class="macro-pill macro-pro">~203g protein</span>
-          </div>
-          <i class="chevron">&#8964;</i>
-        </div>
-      </summary>
-      <div class="day-meals">
-        <div class="day-note">Tinned mackerel. Rice prep (IP) before dinner. Vincent: add extra rice or extra peanut butter in oats. Supplements: D3, Fish Oil.</div>
-        <div class="meal-row">
-          <span class="meal-label">Morning</span>
-          <span class="meal-name">Toast with Vegemite OR Weetabix with milk</span>
-          <span class="meal-macros"><span>180 cal</span><span>6g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Breakfast</span>
-          <span class="meal-name">Overnight protein oats with banana, peanut butter &amp; pumpkin seeds</span>
-          <span class="meal-macros"><span>720 cal</span><span>36g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Lunch</span>
-          <span class="meal-name">Leftover prawn stir fry with rice</span>
-          <span class="meal-macros"><span>680 cal</span><span>44g P</span></span>
-        </div>
-        <div class="meal-row">
-          <span class="meal-label">Dinner</span>
-          <span class="meal-name"><a class="meal-link" href="#recipe-mackerel">IP Asian Braised Mackerel with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Sun lunch next week)</em></span>
+          <span class="meal-name"><a class="meal-link" href="#recipe-mackerel">IP Asian Braised Mackerel with rice</a> <em style="font-size:0.75rem;color:var(--text-muted)">(serves 4 &rarr; Fri lunch next week)</em></span>
           <span class="meal-macros"><span>760 cal</span><span>52g P</span></span>
         </div>
         <div class="meal-row">
           <span class="meal-label">Evening</span>
           <span class="meal-name">Protein shake (soy milk, frozen fruits, kefir 150ml) + Greek yoghurt with honey</span>
-          <span class="meal-macros"><span>610 cal</span><span>55g P</span></span>
+          <span class="meal-macros"><span>670 cal</span><span>53g P</span></span>
         </div>
       </div>
     </details>
@@ -801,14 +778,14 @@
     <summary>Recipes <i class="chevron">&#8964;</i></summary>
     <div class="recipe-grid">
 
-      <!-- IP Korean Beef -->
-      <details class="recipe-card" id="recipe-korean-beef">
+      <!-- Wok Chicken & Courgette Stir Fry NEW -->
+      <details class="recipe-card" id="recipe-courgette-stir-fry">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
-              <span class="recipe-tag tag-ip">IP &mdash; NEW</span>
-              <h3>IP Korean Beef</h3>
-              <div class="recipe-meta"><span>4 servings</span><span>780 cal &bull; 50g P &bull; 70g C &bull; 20g F</span></div>
+              <span class="recipe-tag tag-wok">Wok &mdash; NEW</span>
+              <h3>Chicken &amp; Courgette Stir Fry</h3>
+              <div class="recipe-meta"><span>4 servings</span><span>720 cal &bull; 50g P &bull; 76g C &bull; 18g F</span></div>
             </div>
             <i class="chevron">&#8964;</i>
           </div>
@@ -816,38 +793,82 @@
         <div class="recipe-body">
           <div class="recipe-section-title">Ingredients</div>
           <ul>
-            <li>800g braising beef (chuck), cut into 3cm chunks</li>
-            <li>3 pak choi, halved lengthways</li>
-            <li>5 tbsp soy sauce (low sodium if possible)</li>
-            <li>3 tbsp gochujang paste</li>
-            <li>3 tbsp brown sugar</li>
-            <li>250ml beef stock (½ stock cube + water)</li>
-            <li>5 cloves garlic, minced</li>
-            <li>2cm fresh ginger, grated</li>
-            <li>2 tbsp sesame oil</li>
-            <li>2 tbsp rice vinegar</li>
-            <li>1 tsp chilli flakes (optional)</li>
-            <li>4 spring onions + sesame seeds to serve</li>
+            <li>800g boneless chicken thighs, sliced thin (~1cm strips)</li>
+            <li>2 medium courgettes, cut into half-moons</li>
+            <li>200g green beans, trimmed and halved</li>
+            <li>4 cloves garlic, minced</li>
+            <li>3cm fresh ginger, grated</li>
+            <li>2 tbsp vegetable oil</li>
+            <li>4 spring onions to garnish</li>
             <li>300g brown rice (prep separately in IP)</li>
+            <li><strong>Marinade:</strong> 1 tbsp soy sauce + 1 tsp cornflour</li>
+            <li><strong>Sauce:</strong> 3 tbsp oyster sauce, 2 tbsp soy sauce, 1 tbsp sesame oil, 1 tsp rice vinegar</li>
+            <li><strong>Slurry:</strong> 1 tsp cornflour + 2 tbsp cold water</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>Whisk all sauce ingredients (soy, gochujang, brown sugar, stock, garlic, ginger, sesame oil, rice vinegar, chilli) in a bowl</li>
-            <li>Place beef chunks in IP. Pour sauce over and toss to coat</li>
-            <li>HIGH PRESSURE 35 minutes + 10 min natural release</li>
-            <li>SAUTE mode: simmer 5 min to reduce sauce slightly</li>
-            <li>Steam pak choi: microwave with a splash of water 2&ndash;3 min</li>
-            <li>Serve beef over rice with pak choi. Garnish with spring onions and sesame seeds</li>
+            <li>Toss sliced chicken with marinade (soy + cornflour). Set aside 10&ndash;15 min</li>
+            <li>Mix sauce in a small bowl. Set aside</li>
+            <li>Heat wok over highest heat until smoking. Add 1 tbsp oil</li>
+            <li>Add chicken in a single layer &mdash; sear 30 sec undisturbed, then stir fry 3&ndash;4 min until cooked through. Remove</li>
+            <li>Add remaining oil, garlic and ginger &mdash; stir 30 sec (do not burn)</li>
+            <li>Add green beans &mdash; stir fry 2 min. Add courgette &mdash; stir fry 2 min more. Both should have some colour</li>
+            <li>Return chicken. Pour sauce over. Toss to combine</li>
+            <li>Add cornflour slurry &mdash; stir until sauce thickens (1 min)</li>
+            <li>Serve over rice. Garnish with spring onions. Vincent: extra rice to hit calorie target.</li>
           </ol>
         </div>
       </details>
 
-      <!-- Batch: Chicken Thighs -->
+      <!-- IP Mushroom Chicken & Green Beans NEW -->
+      <details class="recipe-card" id="recipe-mushroom-chicken">
+        <summary>
+          <div class="recipe-summary-inner">
+            <div class="recipe-summary-main">
+              <span class="recipe-tag tag-ip">IP &mdash; NEW</span>
+              <h3>Mushroom Chicken &amp; Green Beans</h3>
+              <div class="recipe-meta"><span>4 servings</span><span>760 cal &bull; 54g P &bull; 78g C &bull; 16g F</span></div>
+            </div>
+            <i class="chevron">&#8964;</i>
+          </div>
+        </summary>
+        <div class="recipe-body">
+          <div class="recipe-section-title">Ingredients</div>
+          <ul>
+            <li>600g shredded batch chicken (second half of Tuesday batch)</li>
+            <li>250g chestnut mushrooms, sliced</li>
+            <li>300g green beans, trimmed and halved</li>
+            <li>1 large onion, diced</li>
+            <li>4 cloves garlic, minced</li>
+            <li>2cm fresh ginger, grated</li>
+            <li>300ml chicken stock (½ stock cube + water)</li>
+            <li>3 tbsp soy sauce</li>
+            <li>2 tbsp oyster sauce</li>
+            <li>1 tsp sesame oil</li>
+            <li>1 tsp rice vinegar</li>
+            <li>1 tbsp vegetable oil</li>
+            <li>4 spring onions to garnish</li>
+            <li>300g brown rice (prep separately in IP)</li>
+          </ul>
+          <div class="recipe-section-title">Method</div>
+          <ol>
+            <li>Set IP to SAUTE, add oil. Cook onion 3 min. Add garlic and ginger &mdash; stir 1 min</li>
+            <li>Add stock, soy sauce, oyster sauce, rice vinegar &mdash; stir to combine</li>
+            <li>Add shredded chicken and mushrooms &mdash; stir through</li>
+            <li>HIGH PRESSURE 3 minutes + quick release</li>
+            <li>Set to SAUTE. Add green beans &mdash; simmer 4&ndash;5 min until just tender</li>
+            <li>Drizzle sesame oil over. Season to taste</li>
+            <li>Serve over rice. Garnish with spring onions</li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- Batch Chicken Thighs -->
       <details class="recipe-card">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
-              <span class="recipe-tag tag-batch">Batch &mdash; Tue 14 Apr</span>
+              <span class="recipe-tag tag-batch">Batch &mdash; Tue 28 Apr</span>
               <h3>Batch Chicken Thighs (IP)</h3>
               <div class="recipe-meta"><span>IP 25 min HP + 10 min NR</span><span>Makes ~1.2kg shredded</span></div>
             </div>
@@ -867,10 +888,10 @@
           <ol>
             <li>Add stock to Instant Pot</li>
             <li>Season chicken with garlic powder, paprika, salt and pepper</li>
-            <li>Place chicken in IP on trivet or directly in stock</li>
+            <li>Place chicken in stock &mdash; can stack</li>
             <li>HIGH PRESSURE 25 minutes + 10 min natural release</li>
-            <li>Remove chicken, shred with two forks &mdash; discard liquid</li>
-            <li>Split into two equal portions (~600g each): one for Teriyaki Noodles, one for Chicken Curry</li>
+            <li>Shred with two forks in the pot</li>
+            <li>Split into 2 equal portions (~600g each): one for Teriyaki Noodles tonight, refrigerate the second for Wednesday&rsquo;s Mushroom Chicken</li>
           </ol>
         </div>
       </details>
@@ -890,47 +911,41 @@
         <div class="recipe-body">
           <div class="recipe-section-title">Ingredients</div>
           <ul>
-            <li>800g salmon fillets, skin off, cut into chunks</li>
+            <li>800g salmon fillets, skinless, cut into large chunks</li>
             <li>2 &times; 400g tins chickpeas, drained</li>
-            <li>2 &times; 400ml tins full-fat coconut milk</li>
+            <li>1 &times; 400ml tin full-fat coconut milk</li>
             <li>1 &times; 400g tin chopped tomatoes</li>
             <li>200g baby spinach</li>
-            <li>2 red peppers, sliced</li>
-            <li>1 large onion, diced</li>
-            <li>4 garlic cloves, crushed</li>
-            <li>1 thumb fresh ginger, grated</li>
+            <li>2 onions, diced</li>
+            <li>4 cloves garlic, minced</li>
+            <li>2cm fresh ginger, grated</li>
             <li>2 tbsp curry powder</li>
-            <li>1 tsp garam masala</li>
             <li>1 tsp ground cumin</li>
-            <li>1 tsp ground coriander</li>
+            <li>1 tbsp olive oil</li>
             <li>Salt and pepper</li>
-            <li>2 tbsp vegetable oil</li>
-            <li>Juice of 1 lemon</li>
             <li>300g brown rice (prep separately in IP)</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>SAUTE mode: heat oil, fry onion 3 min until softened</li>
-            <li>Add garlic, ginger, curry powder, cumin, coriander &mdash; stir 1 min</li>
-            <li>Add chopped tomatoes and deglaze the pot</li>
-            <li>Add coconut milk, chickpeas, red peppers, salt and pepper &mdash; stir</li>
-            <li>Lay salmon chunks on top &mdash; do not stir</li>
-            <li>HIGH PRESSURE 4 minutes + quick release</li>
-            <li>Open lid, stir gently &mdash; salmon will break into flakes naturally</li>
-            <li>Stir through spinach until wilted. Add garam masala and lemon juice.</li>
+            <li>SAUTE mode: heat oil, cook onions 3 min. Add garlic, ginger, curry powder, cumin &mdash; stir 1 min</li>
+            <li>Add chickpeas, tomatoes, coconut milk, salt and pepper</li>
+            <li>HIGH PRESSURE 3 minutes. Quick release</li>
+            <li>SAUTE (low): lay salmon chunks on top. Simmer 5&ndash;6 min, turning once, until just cooked</li>
+            <li>Gently break salmon into large flakes and stir through</li>
+            <li>Stir in spinach until wilted. Season to taste</li>
             <li>Serve over rice</li>
           </ol>
         </div>
       </details>
 
-      <!-- Beef & Sweet Potato Stew -->
-      <details class="recipe-card" id="recipe-beef-stew">
+      <!-- Beef Chilli -->
+      <details class="recipe-card" id="recipe-beef-chilli">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
               <span class="recipe-tag tag-ip">IP</span>
-              <h3>Beef &amp; Sweet Potato Stew</h3>
-              <div class="recipe-meta"><span>4 servings</span><span>880 cal &bull; 55g P &bull; 86g C &bull; 22g F</span></div>
+              <h3>IP Beef Chilli</h3>
+              <div class="recipe-meta"><span>4 servings</span><span>860 cal &bull; 52g P &bull; 88g C &bull; 28g F</span></div>
             </div>
             <i class="chevron">&#8964;</i>
           </div>
@@ -938,44 +953,42 @@
         <div class="recipe-body">
           <div class="recipe-section-title">Ingredients</div>
           <ul>
-            <li>800g diced braising beef</li>
-            <li>2 large sweet potatoes (~600g), peeled and cubed</li>
-            <li>200g baby spinach</li>
-            <li>3 carrots, diced</li>
-            <li>1 onion, diced</li>
-            <li>4 garlic cloves, crushed</li>
-            <li>600ml beef stock (2 stock cubes + water)</li>
-            <li>1 &times; 400g tin chopped tomatoes</li>
-            <li>2 tbsp tomato puree</li>
-            <li>1 tsp smoked paprika</li>
-            <li>1 tsp dried thyme</li>
-            <li>2 tbsp cornflour (mixed with 2 tbsp water)</li>
-            <li>Salt and pepper</li>
-            <li>2 tbsp vegetable oil</li>
+            <li>800g braising beef (chuck), diced into 2cm chunks</li>
+            <li>2 &times; 400g tins chopped tomatoes</li>
+            <li>1 &times; 400g tin kidney beans, drained</li>
+            <li>1 &times; 400g tin baked beans</li>
+            <li>1 red pepper, diced</li>
+            <li>1 large onion, diced</li>
+            <li>4 cloves garlic, minced</li>
+            <li>3 tbsp tomato puree</li>
+            <li>2 tsp ground cumin</li>
+            <li>2 tsp smoked paprika</li>
+            <li>1 tsp chilli flakes (adjust to taste)</li>
+            <li>1 tsp dried oregano</li>
+            <li>500ml beef stock (1 stock cube + water)</li>
+            <li>1 tbsp olive oil, salt and pepper</li>
             <li>300g brown rice (prep separately in IP)</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>SAUTE mode: heat oil, brown beef in batches 3&ndash;4 min &mdash; set aside</li>
-            <li>Fry onion 3 min. Add garlic, tomato puree, paprika, thyme &mdash; stir 1 min.</li>
-            <li>Add beef stock and deglaze. Add chopped tomatoes.</li>
-            <li>Return beef. Add carrots and sweet potato.</li>
+            <li>SAUTE: brown beef in batches 2&ndash;3 min. Set aside</li>
+            <li>Saute onion 3 min. Add garlic 1 min. Add cumin, paprika, chilli, oregano, tomato puree &mdash; stir 1 min</li>
+            <li>Return beef. Add tomatoes, stock, red pepper, kidney beans, baked beans</li>
             <li>HIGH PRESSURE 35 minutes + 10 min natural release</li>
-            <li>Stir through spinach until wilted</li>
-            <li>If sauce too thin: SAUTE mode, stir in cornflour slurry, simmer 2 min</li>
+            <li>Season to taste. SAUTE 5 min to reduce if too thin</li>
             <li>Serve over rice</li>
           </ol>
         </div>
       </details>
 
-      <!-- Wok Prawn Stir Fry -->
-      <details class="recipe-card" id="recipe-prawn-stir-fry">
+      <!-- Mexican Chipotle Bowl -->
+      <details class="recipe-card" id="recipe-mexican-pork">
         <summary>
           <div class="recipe-summary-inner">
             <div class="recipe-summary-main">
-              <span class="recipe-tag tag-wok">Wok &mdash; NEW</span>
-              <h3>Garlic &amp; Ginger Prawn Stir Fry</h3>
-              <div class="recipe-meta"><span>4 servings</span><span>680 cal &bull; 44g P &bull; 68g C &bull; 12g F</span></div>
+              <span class="recipe-tag tag-ip">IP</span>
+              <h3>Mexican Chipotle Rice Bowl</h3>
+              <div class="recipe-meta"><span>4 servings</span><span>800 cal &bull; 44g P &bull; 102g C &bull; 20g F</span></div>
             </div>
             <i class="chevron">&#8964;</i>
           </div>
@@ -983,33 +996,29 @@
         <div class="recipe-body">
           <div class="recipe-section-title">Ingredients</div>
           <ul>
-            <li>800g raw king prawns (defrost in cold water 30 min)</li>
-            <li>2 heads broccoli, cut into small florets</li>
-            <li>2 carrots, julienned</li>
-            <li>2 pak choi, leaves separated</li>
+            <li>700g boneless pork shoulder, cut into 4&ndash;5 large chunks</li>
+            <li>1 &times; 400g tin chopped tomatoes</li>
+            <li>1 &times; 400g tin kidney beans, drained</li>
+            <li>200ml chicken stock (½ stock cube + water)</li>
+            <li>2 tbsp chipotle paste</li>
             <li>4 cloves garlic, minced</li>
-            <li>3cm fresh ginger, grated</li>
-            <li>4 tbsp soy sauce</li>
-            <li>2 tbsp oyster sauce</li>
-            <li>1 tsp sesame oil</li>
-            <li>1 tsp rice vinegar</li>
-            <li>1 tsp chilli flakes</li>
-            <li>1 tsp cornflour mixed with 2 tbsp cold water</li>
-            <li>1 tbsp vegetable oil</li>
-            <li>4 spring onions + sesame seeds to serve</li>
+            <li>1 onion, diced</li>
+            <li>1 tsp ground cumin</li>
+            <li>1 tsp smoked paprika</li>
+            <li>Juice of 2 limes</li>
+            <li>1 tbsp olive oil, salt and pepper</li>
+            <li>4 tbsp Greek yoghurt + lime wedges to serve</li>
             <li>300g brown rice (prep separately in IP)</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>Mix sauce: soy, oyster sauce, sesame oil, rice vinegar, chilli flakes. Set aside</li>
-            <li>Pat prawns dry with kitchen paper</li>
-            <li>Heat wok until smoking. Add vegetable oil</li>
-            <li>Stir fry broccoli and carrots 3&ndash;4 min until just tender with some char. Set aside</li>
-            <li>Add garlic and ginger to wok &mdash; stir 30 sec (do not burn)</li>
-            <li>Add prawns &mdash; stir fry 2&ndash;3 min until pink. Do not overcook</li>
-            <li>Return veg. Add pak choi, toss 1 min</li>
-            <li>Pour sauce over. Add cornflour slurry, stir until slightly thickened</li>
-            <li>Serve over rice. Garnish with spring onions and sesame seeds. Vincent: add extra rice.</li>
+            <li>SAUTE: season pork, brown 2&ndash;3 min each side. Remove</li>
+            <li>Saute onion 2 min. Add garlic and chipotle paste &mdash; stir 1 min</li>
+            <li>Return pork. Add tomatoes, stock, lime juice</li>
+            <li>HIGH PRESSURE 50 minutes + 15 min natural release</li>
+            <li>Remove pork, shred with two forks, return to pot</li>
+            <li>SAUTE: add kidney beans, simmer 5 min. Season to taste</li>
+            <li>Serve over rice with Greek yoghurt and lime wedges</li>
           </ol>
         </div>
       </details>
@@ -1029,78 +1038,28 @@
         <div class="recipe-body">
           <div class="recipe-section-title">Ingredients</div>
           <ul>
-            <li>600g shredded chicken (from batch)</li>
+            <li>600g shredded batch chicken (first half of Tuesday batch)</li>
             <li>300g medium egg noodles (dry)</li>
-            <li>2 heads broccoli, cut into florets</li>
-            <li>4 carrots, julienned</li>
+            <li>2 heads broccoli, cut into small florets</li>
+            <li>2 carrots, julienned</li>
             <li>4 spring onions, sliced</li>
-            <li>4 garlic cloves, minced</li>
-            <li>1 thumb fresh ginger, grated</li>
-            <li>6 tbsp mirin</li>
-            <li>3 tbsp soy sauce (light)</li>
-            <li>1 tbsp sesame oil</li>
-            <li>1 tbsp rice vinegar</li>
-            <li>1 tbsp vegetable oil</li>
-            <li>Salt and pepper</li>
+            <li>1 tbsp vegetable oil, sesame seeds to garnish</li>
+            <li><strong>Teriyaki sauce:</strong> 6 tbsp soy sauce, 4 tbsp honey, 2 tbsp mirin, 1 tsp sesame oil, 2 tsp cornflour + 2 tbsp cold water</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>Cook noodles per packet &mdash; drain and set aside</li>
-            <li>Mix sauce: mirin, soy sauce, rice vinegar, 1 tsp sesame oil</li>
-            <li>High heat wok: heat vegetable oil, stir-fry broccoli and carrots 3&ndash;4 min</li>
-            <li>Add garlic and ginger &mdash; stir 30 sec</li>
-            <li>Add shredded chicken &mdash; toss to heat through</li>
-            <li>Add noodles and pour over sauce &mdash; toss everything together 2 min</li>
-            <li>Finish with remaining sesame oil and spring onions. Vincent: add extra noodles to hit calorie target.</li>
+            <li>Cook noodles per packet. Drain and set aside</li>
+            <li>Mix all teriyaki sauce ingredients in a bowl</li>
+            <li>High heat wok: add oil. Stir fry broccoli and carrots 3&ndash;4 min with some char</li>
+            <li>Add shredded chicken, toss to heat through 2 min</li>
+            <li>Pour sauce over. Toss to coat. Bubble 1&ndash;2 min until slightly thickened</li>
+            <li>Add noodles, toss until fully combined</li>
+            <li>Top with spring onions and sesame seeds. Vincent: add extra noodles if short on calories.</li>
           </ol>
         </div>
       </details>
 
-      <!-- IP Chicken Curry -->
-      <details class="recipe-card" id="recipe-chicken-curry">
-        <summary>
-          <div class="recipe-summary-inner">
-            <div class="recipe-summary-main">
-              <span class="recipe-tag tag-ip">IP</span>
-              <h3>IP Chicken Curry</h3>
-              <div class="recipe-meta"><span>4 servings</span><span>820 cal &bull; 54g P &bull; 85g C &bull; 26g F</span></div>
-            </div>
-            <i class="chevron">&#8964;</i>
-          </div>
-        </summary>
-        <div class="recipe-body">
-          <div class="recipe-section-title">Ingredients</div>
-          <ul>
-            <li>600g shredded chicken (from batch)</li>
-            <li>1 &times; 400g tin chopped tomatoes</li>
-            <li>1 &times; 400ml tin coconut milk</li>
-            <li>200g baby spinach</li>
-            <li>2 red peppers, sliced</li>
-            <li>1 large onion, diced</li>
-            <li>4 garlic cloves, crushed</li>
-            <li>2 tbsp curry powder</li>
-            <li>1 tsp garam masala</li>
-            <li>1 tsp ground coriander</li>
-            <li>2 tbsp tomato puree</li>
-            <li>Salt and pepper</li>
-            <li>2 tbsp vegetable oil</li>
-            <li>300g brown rice (prep separately in IP)</li>
-          </ul>
-          <div class="recipe-section-title">Method</div>
-          <ol>
-            <li>SAUTE mode: heat oil, fry onion 3 min</li>
-            <li>Add garlic, curry powder, coriander, tomato puree &mdash; stir 1 min</li>
-            <li>Add chopped tomatoes, deglaze pot</li>
-            <li>Add coconut milk, red peppers, salt and pepper &mdash; stir</li>
-            <li>Add shredded chicken &mdash; stir through</li>
-            <li>HIGH PRESSURE 5 minutes + quick release</li>
-            <li>Stir through spinach until wilted. Add garam masala.</li>
-            <li>Serve over rice</li>
-          </ol>
-        </div>
-      </details>
-
-      <!-- IP Asian Braised Mackerel -->
+      <!-- Mackerel -->
       <details class="recipe-card" id="recipe-mackerel">
         <summary>
           <div class="recipe-summary-inner">
@@ -1116,32 +1075,28 @@
           <div class="recipe-section-title">Ingredients</div>
           <ul>
             <li>4 &times; 125g tins mackerel in brine, drained</li>
-            <li>2 &times; 400g tins chopped tomatoes</li>
+            <li>1 &times; 400g tin chopped tomatoes</li>
+            <li>200ml chicken stock (½ stock cube + water)</li>
             <li>200g baby spinach</li>
-            <li>200g fine green beans</li>
             <li>1 onion, diced</li>
-            <li>4 garlic cloves, crushed</li>
-            <li>1 thumb fresh ginger, grated</li>
-            <li>3 tbsp soy sauce (light)</li>
-            <li>1 tbsp sesame oil</li>
+            <li>3 cloves garlic, minced</li>
+            <li>2cm fresh ginger, grated</li>
+            <li>2 tbsp soy sauce</li>
             <li>1 tbsp rice vinegar</li>
+            <li>1 tsp sesame oil</li>
             <li>1 tsp chilli flakes</li>
             <li>1 tbsp vegetable oil</li>
-            <li>Juice of 2 lemons</li>
-            <li>Salt and pepper</li>
+            <li>2 spring onions to garnish</li>
             <li>300g brown rice (prep separately in IP)</li>
           </ul>
           <div class="recipe-section-title">Method</div>
           <ol>
-            <li>SAUTE mode: heat oil, fry onion 3 min</li>
-            <li>Add garlic, ginger, chilli flakes &mdash; stir 1 min</li>
-            <li>Add soy sauce, rice vinegar, chopped tomatoes &mdash; deglaze pot</li>
-            <li>Add green beans, stir through</li>
-            <li>Lay mackerel pieces gently on top &mdash; do not stir</li>
-            <li>HIGH PRESSURE 3 minutes + quick release</li>
-            <li>Stir gently &mdash; mackerel will flake naturally</li>
-            <li>Stir through spinach until wilted. Add lemon juice and sesame oil.</li>
-            <li>Serve over rice</li>
+            <li>SAUTE: heat oil, cook onion 3 min. Add garlic, ginger, chilli flakes &mdash; stir 1 min</li>
+            <li>Add tomatoes, stock, soy sauce, rice vinegar &mdash; stir to combine</li>
+            <li>Gently lay mackerel on top &mdash; do not stir or it will break</li>
+            <li>HIGH PRESSURE 5 minutes + quick release</li>
+            <li>SAUTE: stir in spinach until wilted. Drizzle sesame oil over</li>
+            <li>Season to taste. Serve over rice. Garnish with spring onions</li>
           </ol>
         </div>
       </details>
@@ -1161,57 +1116,54 @@
 
     <!-- Meat & Fish -->
     <details class="shopping-category" open>
-      <summary>Meat &amp; Fish <span class="category-badge">6 items</span> <i class="chevron">&#8964;</i></summary>
+      <summary>Meat &amp; Fish <span class="category-badge">5 items</span> <i class="chevron">&#8964;</i></summary>
       <table class="shopping-table">
         <thead><tr><th>Item</th><th>Qty needed</th><th>In stock?</th><th>Order qty</th></tr></thead>
         <tbody>
-          <tr data-id="chicken-thighs"><td class="item-name">Boneless skinless chicken thighs (frozen)</td><td>2kg (4&times; 500g bags)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-chicken-thighs"></td></tr>
-          <tr data-id="braising-beef"><td class="item-name">Braising beef (chuck), diced</td><td>1.6kg (4&times; 400g packs — stew + Korean beef)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-braising-beef"></td></tr>
-          <tr data-id="salmon"><td class="item-name">Salmon fillets, skinless (fresh)</td><td>2&times; 2-fillet packs</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-salmon"></td></tr>
-          <tr data-id="prawns"><td class="item-name">Frozen raw king prawns</td><td>2&times; 400g bags (800g)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-prawns"></td></tr>
+          <tr data-id="salmon"><td class="item-name">Salmon fillets, skinless (fresh)</td><td>2&times; 2-fillet packs (~800g)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-salmon"></td></tr>
+          <tr data-id="braising-beef"><td class="item-name">Braising beef (chuck), diced</td><td>2&times; 400g packs (800g)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-braising-beef"></td></tr>
+          <tr data-id="pork-shoulder"><td class="item-name">Boneless pork shoulder joint</td><td>1 joint (~1.2kg &mdash; use 700g, freeze rest)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-pork-shoulder"></td></tr>
+          <tr data-id="chicken-thighs"><td class="item-name">Boneless skinless chicken thighs (frozen)</td><td>4&times; 500g bags (2kg)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-chicken-thighs"></td></tr>
           <tr data-id="mackerel-tins"><td class="item-name">Tinned mackerel in brine</td><td>4&times; 125g tins</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-mackerel-tins"></td></tr>
-          <tr data-id="tuna-tins"><td class="item-name">Tinned tuna in spring water</td><td>2 tins (Sat standalone lunch)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-tuna-tins"></td></tr>
         </tbody>
       </table>
     </details>
 
     <!-- Dairy & Eggs -->
     <details class="shopping-category" open>
-      <summary>Dairy &amp; Eggs <span class="category-badge">5 items</span> <i class="chevron">&#8964;</i></summary>
+      <summary>Dairy &amp; Eggs <span class="category-badge">6 items</span> <i class="chevron">&#8964;</i></summary>
       <table class="shopping-table">
         <thead><tr><th>Item</th><th>Qty needed</th><th>In stock?</th><th>Order qty</th></tr></thead>
         <tbody>
           <tr data-id="eggs"><td class="item-name">Large free-range eggs</td><td>1&times; 30-box</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-eggs"></td></tr>
-          <tr data-id="milk"><td class="item-name">Semi-skimmed milk</td><td>1&times; 6-pint bottle (oats + cooking only)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-milk"></td></tr>
-          <tr data-id="soy-milk"><td class="item-name">Unsweetened soy milk</td><td>2&times; 1L cartons (evening shakes)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-soy-milk"></td></tr>
-          <tr data-id="frozen-fruits"><td class="item-name">Frozen mixed fruits</td><td>1&times; 500g bag (evening shakes)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-frozen-fruits"></td></tr>
-          <tr data-id="greek-yoghurt"><td class="item-name">Greek yoghurt 0% fat</td><td>2&times; 1kg tubs</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-greek-yoghurt"></td></tr>
-          <tr data-id="cheddar"><td class="item-name">Mature cheddar block</td><td>1&times; 400g block</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-cheddar"></td></tr>
+          <tr data-id="soy-milk"><td class="item-name">Unsweetened soy milk</td><td>2&times; 1L cartons</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-soy-milk"></td></tr>
+          <tr data-id="milk"><td class="item-name">Semi-skimmed milk</td><td>1&times; 4-pint (2.3L)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-milk"></td></tr>
+          <tr data-id="greek-yoghurt"><td class="item-name">Greek yoghurt 0% fat</td><td>1&times; 1kg tub</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-greek-yoghurt"></td></tr>
           <tr data-id="kefir"><td class="item-name">Kefir (plain, probiotic)</td><td>2&times; 1L bottles</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-kefir"></td></tr>
+          <tr data-id="cheddar"><td class="item-name">Mature cheddar block</td><td>1&times; 400g block</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-cheddar"></td></tr>
         </tbody>
       </table>
     </details>
 
     <!-- Produce -->
     <details class="shopping-category" open>
-      <summary>Produce <span class="category-badge">14 items</span> <i class="chevron">&#8964;</i></summary>
+      <summary>Produce <span class="category-badge">13 items</span> <i class="chevron">&#8964;</i></summary>
       <table class="shopping-table">
         <thead><tr><th>Item</th><th>Qty needed</th><th>In stock?</th><th>Order qty</th></tr></thead>
         <tbody>
-          <tr data-id="spinach"><td class="item-name">Baby spinach</td><td>4&times; 200g bags</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-spinach"></td></tr>
-          <tr data-id="broccoli"><td class="item-name">Broccoli</td><td>3 heads</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-broccoli"></td></tr>
-          <tr data-id="pak-choi"><td class="item-name">Pak choi</td><td>4 heads (Korean beef + prawn stir fry)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-pak-choi"></td></tr>
-          <tr data-id="carrots"><td class="item-name">Carrots</td><td>1&times; 1kg bag</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-carrots"></td></tr>
+          <tr data-id="spinach"><td class="item-name">Baby spinach</td><td>2&times; 200g bags</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-spinach"></td></tr>
+          <tr data-id="broccoli"><td class="item-name">Broccoli</td><td>2 heads</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-broccoli"></td></tr>
+          <tr data-id="courgette"><td class="item-name">Courgette &#x2605; NEW</td><td>2 medium</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-courgette"></td></tr>
+          <tr data-id="green-beans"><td class="item-name">Green beans</td><td>1&times; 300g bag</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-green-beans"></td></tr>
+          <tr data-id="mushrooms"><td class="item-name">Chestnut mushrooms &#x2605; NEW</td><td>1&times; 250g pack</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-mushrooms"></td></tr>
           <tr data-id="onions"><td class="item-name">Onions</td><td>1&times; 1kg net</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-onions"></td></tr>
-          <tr data-id="red-pepper"><td class="item-name">Red pepper</td><td>1 loose (beef stew)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-red-pepper"></td></tr>
-          <tr data-id="spring-onions"><td class="item-name">Spring onions</td><td>2 bunches</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-spring-onions"></td></tr>
           <tr data-id="garlic"><td class="item-name">Garlic</td><td>2 bulbs</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-garlic"></td></tr>
-          <tr data-id="ginger"><td class="item-name">Fresh ginger root</td><td>1 large thumb (~80g)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-ginger"></td></tr>
+          <tr data-id="ginger"><td class="item-name">Fresh ginger root</td><td>1 large thumb (~60g)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-ginger"></td></tr>
+          <tr data-id="carrots"><td class="item-name">Carrots</td><td>1&times; 1kg bag</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-carrots"></td></tr>
+          <tr data-id="red-pepper"><td class="item-name">Red pepper</td><td>1 loose (chilli)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-red-pepper"></td></tr>
+          <tr data-id="spring-onions"><td class="item-name">Spring onions</td><td>1 bunch</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-spring-onions"></td></tr>
           <tr data-id="bananas"><td class="item-name">Bananas</td><td>2 bunches</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-bananas"></td></tr>
-          <tr data-id="sweet-potatoes"><td class="item-name">Sweet potatoes</td><td>2 large (~600g)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-sweet-potatoes"></td></tr>
-          <tr data-id="green-beans"><td class="item-name">Fine green beans</td><td>1&times; 200g bag (beef stew)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-green-beans"></td></tr>
-          <tr data-id="baking-potatoes"><td class="item-name">Baking potatoes</td><td>2 large loose (Sat lunch)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-baking-potatoes"></td></tr>
-          <tr data-id="lemons"><td class="item-name">Lemons</td><td>2 loose</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-lemons"></td></tr>
+          <tr data-id="limes"><td class="item-name">Limes</td><td>4 loose (Mexican bowl)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-limes"></td></tr>
         </tbody>
       </table>
     </details>
@@ -1229,36 +1181,39 @@
 
     <!-- Cupboard & Dry -->
     <details class="shopping-category" open>
-      <summary>Cupboard &amp; Dry Goods <span class="category-badge">6 items</span> <i class="chevron">&#8964;</i></summary>
+      <summary>Cupboard &amp; Dry Goods <span class="category-badge">8 items</span> <i class="chevron">&#8964;</i></summary>
       <table class="shopping-table">
         <thead><tr><th>Item</th><th>Qty needed</th><th>In stock?</th><th>Order qty</th></tr></thead>
         <tbody>
-          <tr data-id="brown-rice"><td class="item-name">Brown rice</td><td>1&times; 2kg bag (5 rice nights)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-brown-rice"></td></tr>
-          <tr data-id="porridge-oats"><td class="item-name">Porridge oats</td><td>1&times; 1kg (oats 3 mornings + pancakes)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-porridge-oats"></td></tr>
+          <tr data-id="brown-rice"><td class="item-name">Brown rice</td><td>1&times; 2kg bag (6 rice nights)</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-brown-rice"></td></tr>
+          <tr data-id="porridge-oats"><td class="item-name">Porridge oats</td><td>1&times; 1kg bag</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-porridge-oats"></td></tr>
           <tr data-id="egg-noodles"><td class="item-name">Medium egg noodles (dry)</td><td>1&times; 300g pack</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-egg-noodles"></td></tr>
-          <tr data-id="chopped-tomatoes"><td class="item-name">Tinned chopped tomatoes</td><td>5&times; 400g tins</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-chopped-tomatoes"></td></tr>
+          <tr data-id="chopped-tomatoes"><td class="item-name">Tinned chopped tomatoes</td><td>3&times; 400g tins</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-chopped-tomatoes"></td></tr>
           <tr data-id="chickpeas"><td class="item-name">Tinned chickpeas</td><td>2&times; 400g tins</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-chickpeas"></td></tr>
-          <tr data-id="coconut-milk"><td class="item-name">Tinned coconut milk (full fat)</td><td>2&times; 400ml tins</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-coconut-milk"></td></tr>
+          <tr data-id="coconut-milk"><td class="item-name">Tinned coconut milk (full fat)</td><td>1&times; 400ml tin</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-coconut-milk"></td></tr>
+          <tr data-id="kidney-beans"><td class="item-name">Tinned kidney beans</td><td>2&times; 400g tins</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-kidney-beans"></td></tr>
+          <tr data-id="baked-beans"><td class="item-name">Tinned baked beans</td><td>1&times; 400g tin</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-baked-beans"></td></tr>
         </tbody>
       </table>
     </details>
 
     <!-- Cupboard Staples -->
     <details class="shopping-category">
-      <summary>Cupboard Staples <span class="category-badge">10 items to check</span> <i class="chevron">&#8964;</i></summary>
+      <summary>Cupboard Staples <span class="category-badge">11 items to check</span> <i class="chevron">&#8964;</i></summary>
       <table class="shopping-table">
-        <thead><tr><th>Item</th><th>Notes</th><th>In stock?</th><th>Order qty</th></tr></thead>
+        <thead><tr><th>Item</th><th>Used for</th><th>In stock?</th><th>Order qty</th></tr></thead>
         <tbody>
-          <tr data-id="gochujang"><td class="item-name">Gochujang paste &#x2605; NEW</td><td>Korean beef Wed &mdash; 1&times; jar</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-gochujang"></td></tr>
-          <tr data-id="brown-sugar"><td class="item-name">Brown sugar &#x2605; NEW</td><td>Korean beef Wed &mdash; 1&times; 500g bag</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-brown-sugar"></td></tr>
-          <tr data-id="soy-sauce"><td class="item-name">Soy sauce (light)</td><td>Multiple Asian dishes &mdash; 1&times; 250ml if low</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-soy-sauce"></td></tr>
-          <tr data-id="oyster-sauce"><td class="item-name">Oyster sauce</td><td>Prawn stir fry Thu</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-oyster-sauce"></td></tr>
-          <tr data-id="mirin"><td class="item-name">Mirin</td><td>Teriyaki noodles Mon</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-mirin"></td></tr>
+          <tr data-id="chipotle-paste"><td class="item-name">Chipotle paste</td><td>Mexican bowl Sun</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-chipotle-paste"></td></tr>
+          <tr data-id="mirin"><td class="item-name">Mirin</td><td>Teriyaki noodles Tue</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-mirin"></td></tr>
+          <tr data-id="oyster-sauce"><td class="item-name">Oyster sauce</td><td>Courgette stir fry Mon + mushroom chicken Wed</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-oyster-sauce"></td></tr>
+          <tr data-id="soy-sauce"><td class="item-name">Soy sauce (light)</td><td>Multiple nights &mdash; 1&times; 250ml if low</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-soy-sauce"></td></tr>
           <tr data-id="sesame-oil"><td class="item-name">Sesame oil</td><td>Multiple dishes</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-sesame-oil"></td></tr>
-          <tr data-id="peanut-butter"><td class="item-name">Peanut butter (smooth)</td><td>Evening snacks + oats &mdash; 1&times; 340g if low</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-peanut-butter"></td></tr>
-          <tr data-id="curry-powder"><td class="item-name">Curry powder</td><td>Salmon curry Sat + chicken curry Tue</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-curry-powder"></td></tr>
-          <tr data-id="garam-masala"><td class="item-name">Garam masala</td><td>Chicken curry Tue</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-garam-masala"></td></tr>
-          <tr data-id="pumpkin-seeds"><td class="item-name">Pumpkin seeds</td><td>Oats Sun/Tue/Fri &mdash; 100g if low</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-pumpkin-seeds"></td></tr>
+          <tr data-id="cornflour"><td class="item-name">Cornflour</td><td>Courgette stir fry + teriyaki</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-cornflour"></td></tr>
+          <tr data-id="honey"><td class="item-name">Honey</td><td>Teriyaki + oats</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-honey"></td></tr>
+          <tr data-id="rice-vinegar"><td class="item-name">Rice vinegar</td><td>Multiple dishes</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-rice-vinegar"></td></tr>
+          <tr data-id="peanut-butter"><td class="item-name">Peanut butter</td><td>Evening snacks + oats &mdash; 1&times; 340g if low</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-peanut-butter"></td></tr>
+          <tr data-id="pumpkin-seeds"><td class="item-name">Pumpkin seeds</td><td>Oats Sat/Mon/Wed &mdash; 100g if low</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-pumpkin-seeds"></td></tr>
+          <tr data-id="tomato-puree"><td class="item-name">Tomato puree</td><td>Beef chilli Sat</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-tomato-puree"></td></tr>
         </tbody>
       </table>
     </details>
@@ -1270,8 +1225,8 @@
         <thead><tr><th>Item</th><th>Notes</th><th>In stock?</th><th>Order qty</th></tr></thead>
         <tbody>
           <tr data-id="vitamin-d3"><td class="item-name">Vitamin D3 (1,000 IU)</td><td>Daily</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-vitamin-d3"></td></tr>
-          <tr data-id="fish-oil"><td class="item-name">Fish oil capsules</td><td>Sat, Sun, Wed, Fri</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-fish-oil"></td></tr>
-          <tr data-id="magnesium"><td class="item-name">Magnesium</td><td>Sun, Mon, Tue, Wed, Thu</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-magnesium"></td></tr>
+          <tr data-id="fish-oil"><td class="item-name">Fish oil capsules</td><td>Fri, Sat, Tue, Thu</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-fish-oil"></td></tr>
+          <tr data-id="magnesium"><td class="item-name">Magnesium</td><td>Sat, Sun, Mon, Tue, Wed</td><td><button class="stock-toggle" data-state="unknown" onclick="cycleStock(this)">?</button></td><td><input class="order-qty-input" type="text" placeholder="qty" data-id="oq-magnesium"></td></tr>
         </tbody>
       </table>
     </details>
@@ -1281,7 +1236,7 @@
 </div><!-- /content -->
 
 <script>
-  const STORAGE_KEY = 'stock-w6-2026';
+  const STORAGE_KEY = 'stock-w7-2026';
 
   function getItemId(btn) {
     return btn.closest('tr').dataset.id;
@@ -1367,13 +1322,13 @@
   }
 
   function copyOrderSummary() {
-    const lines = ['TESCO ORDER \u2014 Week 6 (12\u201318 Apr 2026)', ''];
+    const lines = ['TESCO ORDER — Week 7 (24–30 Apr 2026)', ''];
     let currentCat = '';
 
     document.querySelectorAll('.shopping-table tbody tr').forEach(row => {
       const stockBtn = row.querySelector('.stock-toggle');
       const state = stockBtn ? stockBtn.dataset.state : 'unknown';
-      if (state === 'yes') return; // fully in stock — skip
+      if (state === 'yes') return;
 
       const itemName = row.querySelector('.item-name');
       const qtyNeeded = row.cells[1] ? row.cells[1].textContent.trim() : '';
@@ -1381,7 +1336,6 @@
       const orderQty = orderInput && orderInput.value.trim() ? orderInput.value.trim() : qtyNeeded;
       const stockNote = state === 'low' ? ' (low)' : '';
 
-      // Get category heading
       const category = row.closest('details');
       const catName = category ? category.querySelector('summary').textContent.trim().replace(/\s*\d+\s*items.*/, '').trim() : '';
       if (catName !== currentCat) {
@@ -1389,7 +1343,7 @@
         currentCat = catName;
       }
 
-      lines.push((itemName ? itemName.textContent.trim() : '') + ' \u2014 ' + orderQty + stockNote);
+      lines.push((itemName ? itemName.textContent.trim() : '') + ' — ' + orderQty + stockNote);
     });
 
     const text = lines.join('\n');
@@ -1401,7 +1355,6 @@
     });
   }
 
-  // Auto-save order qty inputs
   document.addEventListener('input', e => {
     if (e.target.classList.contains('order-qty-input')) saveStockState();
   });
